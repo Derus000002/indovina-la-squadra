@@ -5322,6 +5322,258 @@ kbd {
   }
 }
 
+.club-badge {
+  width: 46px;
+  height: 46px;
+  padding: 4px;
+  overflow: visible;
+  border-radius: 11px;
+}
+
+.club-badge img {
+  object-position: center;
+}
+
+.club-badge--large {
+  width: 56px;
+  height: 56px;
+  padding: 5px;
+}
+
+.answer {
+  overflow: visible;
+}
+
+.select-shell {
+  position: relative;
+}
+
+.league-select {
+  width: 100%;
+  min-height: 50px;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 44px 0 14px;
+  border: 1.7px solid var(--ink);
+  border-radius: 13px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+}
+
+.league-select:hover {
+  background: var(--paper-2);
+}
+
+.league-select:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+
+.select-chevron {
+  position: absolute;
+  top: 50%;
+  right: 13px;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select-chevron svg {
+  width: 18px;
+  height: 18px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 13px;
+  background: var(--paper);
+  cursor: pointer;
+}
+
+.toggle-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toggle-row .field-hint {
+  margin: 0;
+}
+
+.toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle-ui {
+  position: relative;
+  flex: none;
+  width: 48px;
+  height: 27px;
+  border: 1.7px solid var(--ink);
+  border-radius: 999px;
+  background: rgba(23, 33, 23, 0.09);
+  transition: background 0.2s;
+}
+
+.toggle-ui::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper-2);
+  transition: transform 0.22s var(--ease-spring), background 0.2s;
+}
+
+.toggle-input:checked + .toggle-ui {
+  background: var(--lime);
+}
+
+.toggle-input:checked + .toggle-ui::after {
+  transform: translateX(20px);
+  background: var(--ink);
+}
+
+.toggle-input:focus-visible + .toggle-ui {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+
+.progress-lives {
+  display: flex;
+  min-height: 10px;
+  align-items: center;
+  gap: 5px;
+}
+
+.progress-lives[hidden],
+.progress-dots[hidden],
+#questionsSection[hidden],
+#soloSection[hidden] {
+  display: none !important;
+}
+
+.life {
+  color: var(--coral);
+  font-size: 16px;
+  line-height: 1;
+  filter: drop-shadow(1px 1px 0 var(--ink));
+  transition: color 0.2s, opacity 0.2s, transform 0.2s;
+}
+
+.life.is-lost {
+  color: rgba(23, 33, 23, 0.16);
+  filter: none;
+  transform: scale(0.85);
+}
+
+.setup-summary {
+  flex-wrap: wrap;
+}
+
+.start-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+  opacity: 0.55;
+  transform: none;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.rules-solo {
+  margin-top: 10px;
+  padding: 11px 13px;
+  border: 1.5px dashed var(--line);
+  border-radius: 11px;
+  background: rgba(216, 255, 62, 0.34);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.rules-solo span {
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.final-screen.is-solo .final-grid {
+  grid-template-columns: minmax(0, 640px);
+  justify-content: center;
+}
+
+.final-screen.is-solo .final-side {
+  display: none;
+}
+
+.final-screen.is-solo .final-winner {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.final-screen.is-solo .final-actions {
+  justify-content: center;
+}
+
+@media (max-width: 620px) {
+  .club-badge {
+    width: 40px;
+    height: 40px;
+    padding: 3.5px;
+  }
+
+  .club-badge--large {
+    width: 50px;
+    height: 50px;
+    padding: 4px;
+  }
+
+  .league-select {
+    min-height: 48px;
+    font-size: 11px;
+  }
+
+  .final-screen.is-solo .final-actions {
+    justify-content: stretch;
+  }
+}
+
+@media (max-width: 390px) {
+  .club-badge {
+    width: 34px;
+    height: 34px;
+    padding: 3px;
+  }
+
+  .club-badge--large {
+    width: 44px;
+    height: 44px;
+    padding: 4px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

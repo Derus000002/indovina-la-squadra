@@ -10,8 +10,9 @@
       "wiki": "https://en.wikipedia.org/wiki/AC_Milan",
       "file": "assets/logos/mil.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/250px-Logo_of_AC_Milan.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 36637,
-      "fetchedAt": "2026-11-15T20:41:42.678Z"
+      "bytes": 28840,
+      "fetchedAt": "2026-11-15T20:41:42.678Z",
+      "normalized": "250x250"
     },
     "Inter": {
       "club": "Inter",
@@ -20,8 +21,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Inter_Milan",
       "file": "assets/logos/int.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/FC_Internazionale_Milano_2021.svg/250px-FC_Internazionale_Milano_2021.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 15058,
-      "fetchedAt": "2026-11-15T20:41:43.091Z"
+      "bytes": 20736,
+      "fetchedAt": "2026-11-15T20:41:43.091Z",
+      "normalized": "250x250"
     },
     "Juventus": {
       "club": "Juventus",
@@ -30,8 +32,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Juventus_FC",
       "file": "assets/logos/juv.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Juventus_FC_-_logo_black_%28Italy%2C_2020%29.svg/250px-Juventus_FC_-_logo_black_%28Italy%2C_2020%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 3705,
-      "fetchedAt": "2026-11-15T20:41:43.489Z"
+      "bytes": 2903,
+      "fetchedAt": "2026-11-15T20:41:43.489Z",
+      "normalized": "250x250"
     },
     "Napoli": {
       "club": "Napoli",
@@ -40,8 +43,9 @@
       "wiki": "https://en.wikipedia.org/wiki/SSC_Napoli",
       "file": "assets/logos/nap.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/SSC_Napoli_2025_%28white_and_azure%29.svg/250px-SSC_Napoli_2025_%28white_and_azure%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 21228,
-      "fetchedAt": "2026-11-15T20:41:43.903Z"
+      "bytes": 27088,
+      "fetchedAt": "2026-11-15T20:41:43.903Z",
+      "normalized": "250x250"
     },
     "Bologna": {
       "club": "Bologna",
@@ -50,8 +54,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Bologna_FC_1909",
       "file": "assets/logos/bol.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Bologna_F.C._1909_logo.svg/250px-Bologna_F.C._1909_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 21485,
-      "fetchedAt": "2026-11-15T20:41:44.710Z"
+      "bytes": 18111,
+      "fetchedAt": "2026-11-15T20:41:44.710Z",
+      "normalized": "250x250"
     },
     "Fiorentina": {
       "club": "Fiorentina",
@@ -60,8 +65,9 @@
       "wiki": "https://en.wikipedia.org/wiki/ACF_Fiorentina",
       "file": "assets/logos/fio.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/ACF_Fiorentina_-_logo_%28Italy%2C_2022%29.svg/250px-ACF_Fiorentina_-_logo_%28Italy%2C_2022%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 7346,
-      "fetchedAt": "2026-11-15T20:41:45.105Z"
+      "bytes": 16192,
+      "fetchedAt": "2026-11-15T20:41:45.105Z",
+      "normalized": "250x250"
     },
     "Como": {
       "club": "Como",
@@ -70,8 +76,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Como_1907",
       "file": "assets/logos/com.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/Calcio_Como_-_logo_%28Italy%2C_2019-%29.svg/250px-Calcio_Como_-_logo_%28Italy%2C_2019-%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 13706,
-      "fetchedAt": "2026-11-15T20:41:45.516Z"
+      "bytes": 18474,
+      "fetchedAt": "2026-11-15T20:41:45.516Z",
+      "normalized": "250x250"
     },
     "Parma": {
       "club": "Parma",
@@ -80,8 +87,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Parma_Calcio_1913",
       "file": "assets/logos/par.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_Parma_Calcio_1913_%28adozione_2016%29.svg/250px-Logo_Parma_Calcio_1913_%28adozione_2016%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 12259,
-      "fetchedAt": "2026-11-15T20:41:45.920Z"
+      "bytes": 14581,
+      "fetchedAt": "2026-11-15T20:41:45.920Z",
+      "normalized": "250x250"
     },
     "Wolverhampton": {
       "club": "Wolverhampton",
@@ -90,8 +98,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Wolverhampton_Wanderers_F.C.",
       "file": "assets/logos/wol.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c9/Wolverhampton_Wanderers_FC_crest.svg/250px-Wolverhampton_Wanderers_FC_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 13264,
-      "fetchedAt": "2026-11-15T20:41:48.884Z"
+      "bytes": 18500,
+      "fetchedAt": "2026-11-15T20:41:48.884Z",
+      "normalized": "250x250"
     },
     "Barcelona": {
       "club": "Barcelona",
@@ -100,8 +109,9 @@
       "wiki": "https://en.wikipedia.org/wiki/FC_Barcelona",
       "file": "assets/logos/bar.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/250px-FC_Barcelona_%28crest%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 19694,
-      "fetchedAt": "2026-11-15T20:41:49.294Z"
+      "bytes": 24059,
+      "fetchedAt": "2026-11-15T20:41:49.294Z",
+      "normalized": "250x250"
     },
     "Bayern Monaco": {
       "club": "Bayern Monaco",
@@ -110,8 +120,9 @@
       "wiki": "https://en.wikipedia.org/wiki/FC_Bayern_Munich",
       "file": "assets/logos/bay.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg/250px-FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 34299,
-      "fetchedAt": "2026-11-15T20:41:49.707Z"
+      "bytes": 47176,
+      "fetchedAt": "2026-11-15T20:41:49.707Z",
+      "normalized": "250x250"
     },
     "Borussia Dortmund": {
       "club": "Borussia Dortmund",
@@ -120,8 +131,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Borussia_Dortmund",
       "file": "assets/logos/bvb.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/250px-Borussia_Dortmund_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 16548,
-      "fetchedAt": "2026-11-15T20:41:52.082Z"
+      "bytes": 22473,
+      "fetchedAt": "2026-11-15T20:41:52.082Z",
+      "normalized": "250x250"
     },
     "Stuttgart": {
       "club": "Stuttgart",
@@ -130,8 +142,9 @@
       "wiki": "https://en.wikipedia.org/wiki/VfB_Stuttgart",
       "file": "assets/logos/vfb.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/VfB_Stuttgart_1893_Logo.svg/250px-VfB_Stuttgart_1893_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 30968,
-      "fetchedAt": "2026-11-15T20:41:52.497Z"
+      "bytes": 36798,
+      "fetchedAt": "2026-11-15T20:41:52.497Z",
+      "normalized": "250x250"
     },
     "Wolfsburg": {
       "club": "Wolfsburg",
@@ -140,8 +153,9 @@
       "wiki": "https://en.wikipedia.org/wiki/VfL_Wolfsburg",
       "file": "assets/logos/wob.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/VfL_Wolfsburg_logo_2026.svg/250px-VfL_Wolfsburg_logo_2026.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 15401,
-      "fetchedAt": "2026-11-15T20:41:52.905Z"
+      "bytes": 20826,
+      "fetchedAt": "2026-11-15T20:41:52.905Z",
+      "normalized": "250x250"
     },
     "Mainz 05": {
       "club": "Mainz 05",
@@ -150,8 +164,9 @@
       "wiki": "https://en.wikipedia.org/wiki/1._FSV_Mainz_05",
       "file": "assets/logos/m05.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/1._FSV_Mainz_05_logo.svg/250px-1._FSV_Mainz_05_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 24909,
-      "fetchedAt": "2026-11-15T20:41:53.315Z"
+      "bytes": 31019,
+      "fetchedAt": "2026-11-15T20:41:53.315Z",
+      "normalized": "250x250"
     },
     "Schalke 04": {
       "club": "Schalke 04",
@@ -160,8 +175,9 @@
       "wiki": "https://en.wikipedia.org/wiki/FC_Schalke_04",
       "file": "assets/logos/s04.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/FC_Schalke_04_Logo.svg/250px-FC_Schalke_04_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 18039,
-      "fetchedAt": "2026-11-15T20:41:53.728Z"
+      "bytes": 24142,
+      "fetchedAt": "2026-11-15T20:41:53.728Z",
+      "normalized": "250x250"
     },
     "PSG": {
       "club": "PSG",
@@ -170,8 +186,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Paris_Saint-Germain_FC",
       "file": "assets/logos/psg.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/a/a7/Paris_Saint-Germain_F.C..svg/250px-Paris_Saint-Germain_F.C..svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 32299,
-      "fetchedAt": "2026-11-15T20:41:54.138Z"
+      "bytes": 43011,
+      "fetchedAt": "2026-11-15T20:41:54.138Z",
+      "normalized": "250x250"
     },
     "Marseille": {
       "club": "Marseille",
@@ -180,8 +197,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Olympique_de_Marseille",
       "file": "assets/logos/om.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Olympique_de_Marseille_2026_logo.svg/250px-Olympique_de_Marseille_2026_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 25150,
-      "fetchedAt": "2026-11-15T20:41:54.555Z"
+      "bytes": 32789,
+      "fetchedAt": "2026-11-15T20:41:54.555Z",
+      "normalized": "250x250"
     },
     "Ajax": {
       "club": "Ajax",
@@ -190,8 +208,9 @@
       "wiki": "https://en.wikipedia.org/wiki/AFC_Ajax",
       "file": "assets/logos/aja.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Logo_AFC_Ajax_%281928-1991%2C_2025-%29.png/250px-Logo_AFC_Ajax_%281928-1991%2C_2025-%29.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 99904,
-      "fetchedAt": "2026-11-15T20:41:55.417Z"
+      "bytes": 76670,
+      "fetchedAt": "2026-11-15T20:41:55.417Z",
+      "normalized": "250x250"
     },
     "Feyenoord": {
       "club": "Feyenoord",
@@ -200,8 +219,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Feyenoord",
       "file": "assets/logos/fey.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Feyenoord_logo_since_2024.svg/250px-Feyenoord_logo_since_2024.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 33812,
-      "fetchedAt": "2026-11-15T20:41:55.820Z"
+      "bytes": 41141,
+      "fetchedAt": "2026-11-15T20:41:55.820Z",
+      "normalized": "250x250"
     },
     "Galatasaray": {
       "club": "Galatasaray",
@@ -210,8 +230,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Galatasaray_S.K._(football)",
       "file": "assets/logos/gal.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Galatasaray_S.K._Logo_2026_5-stars.svg/250px-Galatasaray_S.K._Logo_2026_5-stars.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 15901,
-      "fetchedAt": "2026-11-15T20:41:58.303Z"
+      "bytes": 17619,
+      "fetchedAt": "2026-11-15T20:41:58.303Z",
+      "normalized": "250x250"
     },
     "Beşiktaş": {
       "club": "Beşiktaş",
@@ -220,8 +241,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Be%C5%9Fikta%C5%9F_J.K.",
       "file": "assets/logos/bes.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 28463,
-      "fetchedAt": "2026-11-15T20:41:58.701Z"
+      "bytes": 20924,
+      "fetchedAt": "2026-11-15T20:41:58.701Z",
+      "normalized": "250x250"
     },
     "Al Hilal": {
       "club": "Al Hilal",
@@ -230,8 +252,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Al_Hilal_SFC",
       "file": "assets/logos/hil.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Al_Hilal_SFC_Logo.svg/250px-Al_Hilal_SFC_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 4087,
-      "fetchedAt": "2026-11-15T20:41:59.098Z"
+      "bytes": 6467,
+      "fetchedAt": "2026-11-15T20:41:59.098Z",
+      "normalized": "250x250"
     },
     "Al Nassr": {
       "club": "Al Nassr",
@@ -240,8 +263,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Al-Nassr_FC",
       "file": "assets/logos/nas.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Nassr_FC_Logo.svg/250px-Nassr_FC_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 35704,
-      "fetchedAt": "2026-11-15T20:41:59.508Z"
+      "bytes": 46485,
+      "fetchedAt": "2026-11-15T20:41:59.508Z",
+      "normalized": "250x250"
     },
     "Al Qadsiah": {
       "club": "Al Qadsiah",
@@ -250,8 +274,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Al_Qadsiah_FC",
       "file": "assets/logos/qad.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/QAD_LOGO.png/250px-QAD_LOGO.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 4253,
-      "fetchedAt": "2026-11-15T20:41:59.904Z"
+      "bytes": 3832,
+      "fetchedAt": "2026-11-15T20:41:59.904Z",
+      "normalized": "250x250"
     },
     "Al Sadd": {
       "club": "Al Sadd",
@@ -260,8 +285,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Al_Sadd_SC",
       "file": "assets/logos/sad.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c1/Al_Sadd_SC_logo.svg/250px-Al_Sadd_SC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 36257,
-      "fetchedAt": "2026-11-15T20:42:00.737Z"
+      "bytes": 29535,
+      "fetchedAt": "2026-11-15T20:42:00.737Z",
+      "normalized": "250x250"
     },
     "Chicago Fire": {
       "club": "Chicago Fire",
@@ -270,8 +296,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Chicago_Fire_FC",
       "file": "assets/logos/chi.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Chicago_Fire_logo%2C_2021.svg/250px-Chicago_Fire_logo%2C_2021.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 19671,
-      "fetchedAt": "2026-11-15T20:42:03.206Z"
+      "bytes": 25936,
+      "fetchedAt": "2026-11-15T20:42:03.206Z",
+      "normalized": "250x250"
     },
     "LAFC": {
       "club": "LAFC",
@@ -280,8 +307,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Los_Angeles_FC",
       "file": "assets/logos/lafc.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Los_Angeles_Football_Club.svg/250px-Los_Angeles_Football_Club.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 21759,
-      "fetchedAt": "2026-11-15T20:42:03.607Z"
+      "bytes": 20298,
+      "fetchedAt": "2026-11-15T20:42:03.607Z",
+      "normalized": "250x250"
     },
     "Flamengo": {
       "club": "Flamengo",
@@ -290,8 +318,9 @@
       "wiki": "https://en.wikipedia.org/wiki/CR_Flamengo",
       "file": "assets/logos/fla.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Clube_de_Regatas_do_Flamengo_logo.svg/250px-Clube_de_Regatas_do_Flamengo_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 11371,
-      "fetchedAt": "2026-11-15T20:42:04.010Z"
+      "bytes": 11473,
+      "fetchedAt": "2026-11-15T20:42:04.010Z",
+      "normalized": "250x250"
     },
     "Palmeiras": {
       "club": "Palmeiras",
@@ -300,8 +329,9 @@
       "wiki": "https://en.wikipedia.org/wiki/SE_Palmeiras",
       "file": "assets/logos/pal.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Sociedade_Esportiva_Palmeiras_logo_%281_red_star%29.svg/250px-Sociedade_Esportiva_Palmeiras_logo_%281_red_star%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 49013,
-      "fetchedAt": "2026-11-15T20:42:04.420Z"
+      "bytes": 48956,
+      "fetchedAt": "2026-11-15T20:42:04.420Z",
+      "normalized": "250x250"
     },
     "Santos": {
       "club": "Santos",
@@ -310,8 +340,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Santos_FC",
       "file": "assets/logos/san.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Santos_Futebol_Clube_logo_%28with_two_stars_and_a_golden_crown%29.svg/250px-Santos_Futebol_Clube_logo_%28with_two_stars_and_a_golden_crown%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 22050,
-      "fetchedAt": "2026-11-15T20:42:04.822Z"
+      "bytes": 23009,
+      "fetchedAt": "2026-11-15T20:42:04.822Z",
+      "normalized": "250x250"
     },
     "River Plate": {
       "club": "River Plate",
@@ -320,8 +351,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_River_Plate",
       "file": "assets/logos/riv.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Club_Atl%C3%A9tico_River_Plate_logo.svg/250px-Club_Atl%C3%A9tico_River_Plate_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 23061,
-      "fetchedAt": "2026-11-15T20:42:05.225Z"
+      "bytes": 23601,
+      "fetchedAt": "2026-11-15T20:42:05.225Z",
+      "normalized": "250x250"
     },
     "Boca Juniors": {
       "club": "Boca Juniors",
@@ -330,8 +362,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Boca_Juniors",
       "file": "assets/logos/boc.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Boca_Juniors_logo18.svg/250px-Boca_Juniors_logo18.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 30858,
-      "fetchedAt": "2026-11-15T20:42:05.631Z"
+      "bytes": 37395,
+      "fetchedAt": "2026-11-15T20:42:05.631Z",
+      "normalized": "250x250"
     },
     "Racing Club": {
       "club": "Racing Club",
@@ -340,8 +373,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Racing_Club_de_Avellaneda",
       "file": "assets/logos/rac.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Escudo_de_Racing_Club_%282014%29.svg/250px-Escudo_de_Racing_Club_%282014%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 8490,
-      "fetchedAt": "2026-11-15T20:42:06.032Z"
+      "bytes": 9872,
+      "fetchedAt": "2026-11-15T20:42:06.032Z",
+      "normalized": "250x250"
     },
     "Stella Rossa": {
       "club": "Stella Rossa",
@@ -350,8 +384,9 @@
       "wiki": "https://en.wikipedia.org/wiki/Red_Star_Belgrade",
       "file": "assets/logos/czv.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c2/Red_Star_Belgrade_crest.svg/250px-Red_Star_Belgrade_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 20259,
-      "fetchedAt": "2026-11-15T20:42:06.438Z"
+      "bytes": 15445,
+      "fetchedAt": "2026-11-15T20:42:06.438Z",
+      "normalized": "250x250"
     },
     "Partizan": {
       "club": "Partizan",
@@ -360,8 +395,9 @@
       "wiki": "https://en.wikipedia.org/wiki/FK_Partizan",
       "file": "assets/logos/ptz.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/ed/FK_Partizan.svg/250px-FK_Partizan.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 54312,
-      "fetchedAt": "2026-11-15T20:42:06.845Z"
+      "bytes": 40008,
+      "fetchedAt": "2026-11-15T20:42:06.845Z",
+      "normalized": "250x250"
     },
     "Vojvodina": {
       "club": "Vojvodina",
@@ -370,8 +406,9 @@
       "wiki": "https://en.wikipedia.org/wiki/FK_Vojvodina",
       "file": "assets/logos/voj.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Logo_FK_Vojvodina.svg/250px-Logo_FK_Vojvodina.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 23082,
-      "fetchedAt": "2026-11-15T20:42:07.243Z"
+      "bytes": 20416,
+      "fetchedAt": "2026-11-15T20:42:07.243Z",
+      "normalized": "250x250"
     },
     "Čukarički": {
       "club": "Čukarički",
@@ -380,8 +417,9 @@
       "wiki": "https://en.wikipedia.org/wiki/FK_%C4%8Cukari%C4%8Dki",
       "file": "assets/logos/cuk.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/d/d8/FK_Cukaricki_logo.svg/250px-FK_Cukaricki_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "bytes": 23479,
-      "fetchedAt": "2026-11-15T20:42:07.857Z"
+      "bytes": 25895,
+      "fetchedAt": "2026-11-15T20:42:07.857Z",
+      "normalized": "250x250"
     },
     "Al Shabab": {
       "club": "Al Shabab",
@@ -391,8 +429,9 @@
       "file": "assets/logos/shb.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/2/2d/Al_Shabab_FC_%28Riyadh%29.svg/250px-Al_Shabab_FC_%28Riyadh%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "via": "pageimage",
-      "bytes": 39721,
-      "fetchedAt": "2026-11-15T20:44:11.598Z"
+      "bytes": 45917,
+      "fetchedAt": "2026-11-15T20:44:11.598Z",
+      "normalized": "250x250"
     },
     "Roma": {
       "club": "Roma",
@@ -402,8 +441,9 @@
       "file": "assets/logos/rom.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/f7/AS_Roma_logo_%282017%29.svg/250px-AS_Roma_logo_%282017%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 39635,
-      "fetchedAt": "2026-11-15T20:44:12.023Z"
+      "bytes": 32764,
+      "fetchedAt": "2026-11-15T20:44:12.023Z",
+      "normalized": "250x250"
     },
     "Atalanta": {
       "club": "Atalanta",
@@ -413,8 +453,9 @@
       "file": "assets/logos/ata.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/f2/Atalanta_BC_new_logo.svg/250px-Atalanta_BC_new_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 26800,
-      "fetchedAt": "2026-11-15T20:44:12.448Z"
+      "bytes": 36707,
+      "fetchedAt": "2026-11-15T20:44:12.448Z",
+      "normalized": "250x250"
     },
     "Arsenal": {
       "club": "Arsenal",
@@ -424,8 +465,9 @@
       "file": "assets/logos/ars.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/250px-Arsenal_FC.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 41620,
-      "fetchedAt": "2026-11-15T20:44:12.864Z"
+      "bytes": 38495,
+      "fetchedAt": "2026-11-15T20:44:12.864Z",
+      "normalized": "250x250"
     },
     "Chelsea": {
       "club": "Chelsea",
@@ -435,8 +477,9 @@
       "file": "assets/logos/che.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/cc/Chelsea_FC.svg/250px-Chelsea_FC.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 40145,
-      "fetchedAt": "2026-11-15T20:44:13.276Z"
+      "bytes": 51259,
+      "fetchedAt": "2026-11-15T20:44:13.276Z",
+      "normalized": "250x250"
     },
     "Liverpool": {
       "club": "Liverpool",
@@ -446,8 +489,9 @@
       "file": "assets/logos/liv.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/0/0c/Liverpool_FC.svg/250px-Liverpool_FC.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 78748,
-      "fetchedAt": "2026-11-15T20:44:13.708Z"
+      "bytes": 57050,
+      "fetchedAt": "2026-11-15T20:44:13.708Z",
+      "normalized": "250x250"
     },
     "Manchester City": {
       "club": "Manchester City",
@@ -457,8 +501,9 @@
       "file": "assets/logos/mci.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/250px-Manchester_City_FC_badge.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 48217,
-      "fetchedAt": "2026-11-15T20:44:14.137Z"
+      "bytes": 57309,
+      "fetchedAt": "2026-11-15T20:44:14.137Z",
+      "normalized": "250x250"
     },
     "Manchester United": {
       "club": "Manchester United",
@@ -468,8 +513,9 @@
       "file": "assets/logos/mun.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/7/7a/Manchester_United_FC_crest.svg/250px-Manchester_United_FC_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 47114,
-      "fetchedAt": "2026-11-15T20:44:14.548Z"
+      "bytes": 50711,
+      "fetchedAt": "2026-11-15T20:44:14.548Z",
+      "normalized": "250x250"
     },
     "Aston Villa": {
       "club": "Aston Villa",
@@ -479,8 +525,9 @@
       "file": "assets/logos/avl.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/9a/Aston_Villa_FC_new_crest.svg/250px-Aston_Villa_FC_new_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 37476,
-      "fetchedAt": "2026-11-15T20:44:14.949Z"
+      "bytes": 33575,
+      "fetchedAt": "2026-11-15T20:44:14.949Z",
+      "normalized": "250x250"
     },
     "Tottenham": {
       "club": "Tottenham",
@@ -490,8 +537,9 @@
       "file": "assets/logos/tot.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/250px-Tottenham_Hotspur.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 13911,
-      "fetchedAt": "2026-11-15T20:44:15.345Z"
+      "bytes": 14776,
+      "fetchedAt": "2026-11-15T20:44:15.345Z",
+      "normalized": "250x250"
     },
     "Brighton": {
       "club": "Brighton",
@@ -501,8 +549,9 @@
       "file": "assets/logos/bha.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/d/d0/Brighton_and_Hove_Albion_FC_crest.svg/250px-Brighton_and_Hove_Albion_FC_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 28472,
-      "fetchedAt": "2026-11-15T20:44:15.754Z"
+      "bytes": 35780,
+      "fetchedAt": "2026-11-15T20:44:15.754Z",
+      "normalized": "250x250"
     },
     "Bournemouth": {
       "club": "Bournemouth",
@@ -512,8 +561,9 @@
       "file": "assets/logos/bou.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/e5/AFC_Bournemouth_%282013%29.svg/250px-AFC_Bournemouth_%282013%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 27620,
-      "fetchedAt": "2026-11-15T20:44:16.157Z"
+      "bytes": 26317,
+      "fetchedAt": "2026-11-15T20:44:16.157Z",
+      "normalized": "250x250"
     },
     "Burnley": {
       "club": "Burnley",
@@ -523,8 +573,9 @@
       "file": "assets/logos/bur.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/6/6d/Burnley_FC_Logo.svg/250px-Burnley_FC_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 33399,
-      "fetchedAt": "2026-11-15T20:44:16.562Z"
+      "bytes": 34012,
+      "fetchedAt": "2026-11-15T20:44:16.562Z",
+      "normalized": "250x250"
     },
     "Crystal Palace": {
       "club": "Crystal Palace",
@@ -534,8 +585,9 @@
       "file": "assets/logos/cry.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/a/a2/Crystal_Palace_FC_logo_%282022%29.svg/250px-Crystal_Palace_FC_logo_%282022%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 50385,
-      "fetchedAt": "2026-11-15T20:44:16.971Z"
+      "bytes": 43200,
+      "fetchedAt": "2026-11-15T20:44:16.971Z",
+      "normalized": "250x250"
     },
     "Everton": {
       "club": "Everton",
@@ -545,8 +597,9 @@
       "file": "assets/logos/eve.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/7/7c/Everton_FC_logo.svg/250px-Everton_FC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 51721,
-      "fetchedAt": "2026-11-15T20:44:17.389Z"
+      "bytes": 55395,
+      "fetchedAt": "2026-11-15T20:44:17.389Z",
+      "normalized": "250x250"
     },
     "Leeds": {
       "club": "Leeds",
@@ -556,8 +609,9 @@
       "file": "assets/logos/lee.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/54/Leeds_United_F.C._logo.svg/250px-Leeds_United_F.C._logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 27931,
-      "fetchedAt": "2026-11-15T20:44:17.800Z"
+      "bytes": 28019,
+      "fetchedAt": "2026-11-15T20:44:17.800Z",
+      "normalized": "250x250"
     },
     "Nottingham Forest": {
       "club": "Nottingham Forest",
@@ -567,8 +621,9 @@
       "file": "assets/logos/nfo.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/e5/Nottingham_Forest_F.C._logo.svg/250px-Nottingham_Forest_F.C._logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 12042,
-      "fetchedAt": "2026-11-15T20:44:18.197Z"
+      "bytes": 11916,
+      "fetchedAt": "2026-11-15T20:44:18.197Z",
+      "normalized": "250x250"
     },
     "Sunderland": {
       "club": "Sunderland",
@@ -578,8 +633,9 @@
       "file": "assets/logos/sun.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/7/77/Logo_Sunderland.svg/250px-Logo_Sunderland.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 38649,
-      "fetchedAt": "2026-11-15T20:44:18.606Z"
+      "bytes": 38988,
+      "fetchedAt": "2026-11-15T20:44:18.606Z",
+      "normalized": "250x250"
     },
     "Watford": {
       "club": "Watford",
@@ -589,8 +645,9 @@
       "file": "assets/logos/wat.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/e2/Watford.svg/250px-Watford.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 17501,
-      "fetchedAt": "2026-11-15T20:44:19.006Z"
+      "bytes": 23083,
+      "fetchedAt": "2026-11-15T20:44:19.006Z",
+      "normalized": "250x250"
     },
     "West Ham": {
       "club": "West Ham",
@@ -600,8 +657,9 @@
       "file": "assets/logos/whu.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c2/West_Ham_United_FC_logo.svg/250px-West_Ham_United_FC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 25338,
-      "fetchedAt": "2026-11-15T20:44:19.409Z"
+      "bytes": 29408,
+      "fetchedAt": "2026-11-15T20:44:19.409Z",
+      "normalized": "250x250"
     },
     "Real Madrid": {
       "club": "Real Madrid",
@@ -611,8 +669,9 @@
       "file": "assets/logos/rma.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/56/Real_Madrid_CF.svg/250px-Real_Madrid_CF.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 62610,
-      "fetchedAt": "2026-11-15T20:44:19.826Z"
+      "bytes": 47772,
+      "fetchedAt": "2026-11-15T20:44:19.826Z",
+      "normalized": "250x250"
     },
     "Atlético Madrid": {
       "club": "Atlético Madrid",
@@ -622,8 +681,9 @@
       "file": "assets/logos/atm.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/f9/Atletico_Madrid_Logo_2024.svg/250px-Atletico_Madrid_Logo_2024.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 17016,
-      "fetchedAt": "2026-11-15T20:44:20.228Z"
+      "bytes": 17197,
+      "fetchedAt": "2026-11-15T20:44:20.228Z",
+      "normalized": "250x250"
     },
     "Athletic Bilbao": {
       "club": "Athletic Bilbao",
@@ -633,8 +693,9 @@
       "file": "assets/logos/ath.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/98/Club_Athletic_Bilbao_logo.svg/250px-Club_Athletic_Bilbao_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 24792,
-      "fetchedAt": "2026-11-15T20:44:20.635Z"
+      "bytes": 26911,
+      "fetchedAt": "2026-11-15T20:44:20.635Z",
+      "normalized": "250x250"
     },
     "Real Sociedad": {
       "club": "Real Sociedad",
@@ -644,8 +705,9 @@
       "file": "assets/logos/rso.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/f1/Real_Sociedad_logo.svg/250px-Real_Sociedad_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 49509,
-      "fetchedAt": "2026-11-15T20:44:21.046Z"
+      "bytes": 48950,
+      "fetchedAt": "2026-11-15T20:44:21.046Z",
+      "normalized": "250x250"
     },
     "Villarreal": {
       "club": "Villarreal",
@@ -655,8 +717,9 @@
       "file": "assets/logos/vil.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/b/b9/Villarreal_CF_logo-en.svg/250px-Villarreal_CF_logo-en.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 40186,
-      "fetchedAt": "2026-11-15T20:44:21.460Z"
+      "bytes": 35997,
+      "fetchedAt": "2026-11-15T20:44:21.460Z",
+      "normalized": "250x250"
     },
     "Elche": {
       "club": "Elche",
@@ -666,8 +729,9 @@
       "file": "assets/logos/elc.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/a/a7/Elche_CF_logo.svg/250px-Elche_CF_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 34499,
-      "fetchedAt": "2026-11-15T20:44:22.062Z"
+      "bytes": 30350,
+      "fetchedAt": "2026-11-15T20:44:22.062Z",
+      "normalized": "250x250"
     },
     "Deportivo La Coruña": {
       "club": "Deportivo La Coruña",
@@ -677,8 +741,9 @@
       "file": "assets/logos/dep.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/56/RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg/250px-RC_Deportivo_A_Coru%C3%B1a_logo_2026.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 57436,
-      "fetchedAt": "2026-11-15T20:44:22.749Z"
+      "bytes": 46582,
+      "fetchedAt": "2026-11-15T20:44:22.749Z",
+      "normalized": "250x250"
     },
     "Leverkusen": {
       "club": "Leverkusen",
@@ -688,8 +753,9 @@
       "file": "assets/logos/b04.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/59/Bayer_04_Leverkusen_logo.svg/250px-Bayer_04_Leverkusen_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 40382,
-      "fetchedAt": "2026-11-15T20:44:23.362Z"
+      "bytes": 48383,
+      "fetchedAt": "2026-11-15T20:44:23.362Z",
+      "normalized": "250x250"
     },
     "Eintracht Francoforte": {
       "club": "Eintracht Francoforte",
@@ -699,8 +765,9 @@
       "file": "assets/logos/sge.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/7/7e/Eintracht_Frankfurt_crest.svg/250px-Eintracht_Frankfurt_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 29920,
-      "fetchedAt": "2026-11-15T20:44:23.766Z"
+      "bytes": 40291,
+      "fetchedAt": "2026-11-15T20:44:23.766Z",
+      "normalized": "250x250"
     },
     "Lipsia": {
       "club": "Lipsia",
@@ -710,8 +777,9 @@
       "file": "assets/logos/rbl.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/0/04/RB_Leipzig_2014_logo.svg/250px-RB_Leipzig_2014_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 21882,
-      "fetchedAt": "2026-11-15T20:44:24.170Z"
+      "bytes": 27111,
+      "fetchedAt": "2026-11-15T20:44:24.170Z",
+      "normalized": "250x250"
     },
     "Friburgo": {
       "club": "Friburgo",
@@ -721,8 +789,9 @@
       "file": "assets/logos/scf.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/6/6d/SC_Freiburg_logo.svg/250px-SC_Freiburg_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 38643,
-      "fetchedAt": "2026-11-15T20:44:24.579Z"
+      "bytes": 32888,
+      "fetchedAt": "2026-11-15T20:44:24.579Z",
+      "normalized": "250x250"
     },
     "Monaco": {
       "club": "Monaco",
@@ -732,8 +801,9 @@
       "file": "assets/logos/asm.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/cf/LogoASMonacoFC2021.svg/250px-LogoASMonacoFC2021.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 31159,
-      "fetchedAt": "2026-11-15T20:44:25.183Z"
+      "bytes": 21584,
+      "fetchedAt": "2026-11-15T20:44:25.183Z",
+      "normalized": "250x250"
     },
     "Lyon": {
       "club": "Lyon",
@@ -743,8 +813,9 @@
       "file": "assets/logos/ol.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/1/1c/Olympique_Lyonnais_logo.svg/250px-Olympique_Lyonnais_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 21856,
-      "fetchedAt": "2026-11-15T20:44:25.583Z"
+      "bytes": 24604,
+      "fetchedAt": "2026-11-15T20:44:25.583Z",
+      "normalized": "250x250"
     },
     "Benfica": {
       "club": "Benfica",
@@ -754,8 +825,9 @@
       "file": "assets/logos/slb.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/a/a2/SL_Benfica_logo.svg/250px-SL_Benfica_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 54765,
-      "fetchedAt": "2026-11-15T20:44:25.994Z"
+      "bytes": 56666,
+      "fetchedAt": "2026-11-15T20:44:25.994Z",
+      "normalized": "250x250"
     },
     "Porto": {
       "club": "Porto",
@@ -765,8 +837,9 @@
       "file": "assets/logos/por.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/f1/FC_Porto.svg/250px-FC_Porto.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 68603,
-      "fetchedAt": "2026-11-15T20:44:26.419Z"
+      "bytes": 46712,
+      "fetchedAt": "2026-11-15T20:44:26.419Z",
+      "normalized": "250x250"
     },
     "Sporting CP": {
       "club": "Sporting CP",
@@ -776,8 +849,9 @@
       "file": "assets/logos/scp.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/97/Sporting_Clube_de_Portugal_logo_%282026%29.svg/250px-Sporting_Clube_de_Portugal_logo_%282026%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 38376,
-      "fetchedAt": "2026-11-15T20:44:26.828Z"
+      "bytes": 32551,
+      "fetchedAt": "2026-11-15T20:44:26.828Z",
+      "normalized": "250x250"
     },
     "Braga": {
       "club": "Braga",
@@ -787,8 +861,9 @@
       "file": "assets/logos/scb.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/7/79/S.C._Braga_logo.svg/250px-S.C._Braga_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 42641,
-      "fetchedAt": "2026-11-15T20:44:27.237Z"
+      "bytes": 38488,
+      "fetchedAt": "2026-11-15T20:44:27.237Z",
+      "normalized": "250x250"
     },
     "PSV": {
       "club": "PSV",
@@ -798,8 +873,9 @@
       "file": "assets/logos/psv.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/0/05/PSV_Eindhoven.svg/250px-PSV_Eindhoven.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 30483,
-      "fetchedAt": "2026-11-15T20:44:27.647Z"
+      "bytes": 36674,
+      "fetchedAt": "2026-11-15T20:44:27.647Z",
+      "normalized": "250x250"
     },
     "NEC Nijmegen": {
       "club": "NEC Nijmegen",
@@ -809,8 +885,9 @@
       "file": "assets/logos/nec.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/3/38/NEC_Nijmegen_logo.svg/250px-NEC_Nijmegen_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 36500,
-      "fetchedAt": "2026-11-15T20:44:28.064Z"
+      "bytes": 43050,
+      "fetchedAt": "2026-11-15T20:44:28.064Z",
+      "normalized": "250x250"
     },
     "Club Bruges": {
       "club": "Club Bruges",
@@ -820,8 +897,9 @@
       "file": "assets/logos/clb.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/d/d0/Club_Brugge_KV_logo.svg/250px-Club_Brugge_KV_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 45869,
-      "fetchedAt": "2026-11-15T20:44:28.468Z"
+      "bytes": 41801,
+      "fetchedAt": "2026-11-15T20:44:28.468Z",
+      "normalized": "250x250"
     },
     "Anderlecht": {
       "club": "Anderlecht",
@@ -831,8 +909,9 @@
       "file": "assets/logos/and.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/7/77/R.S.C._Anderlecht.svg/250px-R.S.C._Anderlecht.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 41965,
-      "fetchedAt": "2026-11-15T20:44:28.872Z"
+      "bytes": 34536,
+      "fetchedAt": "2026-11-15T20:44:28.872Z",
+      "normalized": "250x250"
     },
     "Genk": {
       "club": "Genk",
@@ -842,8 +921,9 @@
       "file": "assets/logos/gnk.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/53/KRC_Genk_logo.svg/250px-KRC_Genk_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 15834,
-      "fetchedAt": "2026-11-15T20:44:29.271Z"
+      "bytes": 16900,
+      "fetchedAt": "2026-11-15T20:44:29.271Z",
+      "normalized": "250x250"
     },
     "Gent": {
       "club": "Gent",
@@ -853,8 +933,9 @@
       "file": "assets/logos/gnt.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/f4/KAA_Gent_logo.svg/250px-KAA_Gent_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 43963,
-      "fetchedAt": "2026-11-15T20:44:29.682Z"
+      "bytes": 51148,
+      "fetchedAt": "2026-11-15T20:44:29.682Z",
+      "normalized": "250x250"
     },
     "Fenerbahçe": {
       "club": "Fenerbahçe",
@@ -864,8 +945,9 @@
       "file": "assets/logos/fen.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/3/39/Fenerbah%C3%A7e.svg/250px-Fenerbah%C3%A7e.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 46972,
-      "fetchedAt": "2026-11-15T20:44:30.088Z"
+      "bytes": 55454,
+      "fetchedAt": "2026-11-15T20:44:30.088Z",
+      "normalized": "250x250"
     },
     "Trabzonspor": {
       "club": "Trabzonspor",
@@ -875,8 +957,9 @@
       "file": "assets/logos/tra.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/d/de/Trabzonspor_Amblem.svg/250px-Trabzonspor_Amblem.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 21647,
-      "fetchedAt": "2026-11-15T20:44:30.498Z"
+      "bytes": 16590,
+      "fetchedAt": "2026-11-15T20:44:30.498Z",
+      "normalized": "250x250"
     },
     "Al Ahli": {
       "club": "Al Ahli",
@@ -886,8 +969,9 @@
       "file": "assets/logos/ahl.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/4/45/Al_Ahli_Saudi_FC_logo.svg/250px-Al_Ahli_Saudi_FC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 32312,
-      "fetchedAt": "2026-11-15T20:44:30.914Z"
+      "bytes": 35369,
+      "fetchedAt": "2026-11-15T20:44:30.914Z",
+      "normalized": "250x250"
     },
     "Al Diriyah": {
       "club": "Al Diriyah",
@@ -897,8 +981,9 @@
       "file": "assets/logos/dir.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/3/32/Diriyah_Club_Logo.svg/250px-Diriyah_Club_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 20526,
-      "fetchedAt": "2026-11-15T20:44:31.320Z"
+      "bytes": 20909,
+      "fetchedAt": "2026-11-15T20:44:31.320Z",
+      "normalized": "250x250"
     },
     "Al Shamal": {
       "club": "Al Shamal",
@@ -908,8 +993,9 @@
       "file": "assets/logos/shm.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/8/8f/Al-Shamal_SC_logo.svg/250px-Al-Shamal_SC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 39797,
-      "fetchedAt": "2026-11-15T20:44:31.731Z"
+      "bytes": 45793,
+      "fetchedAt": "2026-11-15T20:44:31.731Z",
+      "normalized": "250x250"
     },
     "Al Duhail": {
       "club": "Al Duhail",
@@ -919,8 +1005,9 @@
       "file": "assets/logos/duh.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/8/81/Al-Duhail_SC_%28logo%29.svg/250px-Al-Duhail_SC_%28logo%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 65160,
-      "fetchedAt": "2026-11-15T20:44:32.143Z"
+      "bytes": 47314,
+      "fetchedAt": "2026-11-15T20:44:32.143Z",
+      "normalized": "250x250"
     },
     "Al Wasl": {
       "club": "Al Wasl",
@@ -930,8 +1017,9 @@
       "file": "assets/logos/was.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/3/3d/Al_Wasl_FC_Logo.svg/250px-Al_Wasl_FC_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 42213,
-      "fetchedAt": "2026-11-15T20:44:32.556Z"
+      "bytes": 46826,
+      "fetchedAt": "2026-11-15T20:44:32.556Z",
+      "normalized": "250x250"
     },
     "Al Ain": {
       "club": "Al Ain",
@@ -941,8 +1029,9 @@
       "file": "assets/logos/ain.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/e/ee/Al_Ain_FC_logo.svg/250px-Al_Ain_FC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 45202,
-      "fetchedAt": "2026-11-15T20:44:32.961Z"
+      "bytes": 36689,
+      "fetchedAt": "2026-11-15T20:44:32.961Z",
+      "normalized": "250x250"
     },
     "Shabab Al Ahli": {
       "club": "Shabab Al Ahli",
@@ -952,8 +1041,9 @@
       "file": "assets/logos/sah.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/0/02/Shabab_Al_Ahli_logo.svg/250px-Shabab_Al_Ahli_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 50225,
-      "fetchedAt": "2026-11-15T20:44:33.370Z"
+      "bytes": 53927,
+      "fetchedAt": "2026-11-15T20:44:33.370Z",
+      "normalized": "250x250"
     },
     "Al Jazira": {
       "club": "Al Jazira",
@@ -963,8 +1053,9 @@
       "file": "assets/logos/jaz.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/f/ff/Al_Jazira_Club_logo_en_%282021%29.svg/250px-Al_Jazira_Club_logo_en_%282021%29.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 43832,
-      "fetchedAt": "2026-11-15T20:44:33.785Z"
+      "bytes": 56354,
+      "fetchedAt": "2026-11-15T20:44:33.785Z",
+      "normalized": "250x250"
     },
     "Inter Miami": {
       "club": "Inter Miami",
@@ -974,8 +1065,9 @@
       "file": "assets/logos/mia.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/5c/Inter_Miami_CF_logo.svg/250px-Inter_Miami_CF_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 37827,
-      "fetchedAt": "2026-11-15T20:44:34.187Z"
+      "bytes": 48527,
+      "fetchedAt": "2026-11-15T20:44:34.187Z",
+      "normalized": "250x250"
     },
     "Orlando City": {
       "club": "Orlando City",
@@ -985,8 +1077,9 @@
       "file": "assets/logos/orl.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/6/6a/Orlando_City_2014.svg/250px-Orlando_City_2014.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 30709,
-      "fetchedAt": "2026-11-15T20:44:34.590Z"
+      "bytes": 34935,
+      "fetchedAt": "2026-11-15T20:44:34.590Z",
+      "normalized": "250x250"
     },
     "Corinthians": {
       "club": "Corinthians",
@@ -996,8 +1089,9 @@
       "file": "assets/logos/cor.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/5/5a/Sport_Club_Corinthians_Paulista_crest.svg/250px-Sport_Club_Corinthians_Paulista_crest.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 62787,
-      "fetchedAt": "2026-11-15T20:44:35.003Z"
+      "bytes": 51199,
+      "fetchedAt": "2026-11-15T20:44:35.003Z",
+      "normalized": "250x250"
     },
     "Rosario Central": {
       "club": "Rosario Central",
@@ -1007,8 +1101,9 @@
       "file": "assets/logos/ros.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/ce/Rosario_Central_logo.svg/250px-Rosario_Central_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 37858,
-      "fetchedAt": "2026-11-15T20:44:35.412Z"
+      "bytes": 45049,
+      "fetchedAt": "2026-11-15T20:44:35.412Z",
+      "normalized": "250x250"
     },
     "Lazio": {
       "club": "Lazio",
@@ -1018,8 +1113,9 @@
       "file": "assets/logos/laz.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/ce/S.S._Lazio_badge.svg/250px-S.S._Lazio_badge.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 16865,
-      "fetchedAt": "2026-11-15T21:05:44.095Z"
+      "bytes": 18906,
+      "fetchedAt": "2026-11-15T21:05:44.095Z",
+      "normalized": "250x250"
     },
     "Udinese": {
       "club": "Udinese",
@@ -1029,8 +1125,9 @@
       "file": "assets/logos/udi.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/ce/Udinese_Calcio_logo.svg/250px-Udinese_Calcio_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 41561,
-      "fetchedAt": "2026-11-15T21:05:44.703Z"
+      "bytes": 48888,
+      "fetchedAt": "2026-11-15T21:05:44.703Z",
+      "normalized": "250x250"
     },
     "Lens": {
       "club": "Lens",
@@ -1040,8 +1137,9 @@
       "file": "assets/logos/rcl.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/cc/RC_Lens_logo.svg/250px-RC_Lens_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 28143,
-      "fetchedAt": "2026-11-15T21:05:45.118Z"
+      "bytes": 26650,
+      "fetchedAt": "2026-11-15T21:05:45.118Z",
+      "normalized": "250x250"
     },
     "Al Kharaitiyat": {
       "club": "Al Kharaitiyat",
@@ -1051,8 +1149,9 @@
       "file": "assets/logos/kha.png",
       "imageUrl": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/95/Al_Kharaitiyat_SC_logo.svg/250px-Al_Kharaitiyat_SC_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
       "via": "infobox",
-      "bytes": 56876,
-      "fetchedAt": "2026-11-15T21:05:45.762Z"
+      "bytes": 51621,
+      "fetchedAt": "2026-11-15T21:05:45.762Z",
+      "normalized": "250x250"
     }
   }
 }

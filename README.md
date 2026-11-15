@@ -11,10 +11,12 @@ Apri il link da telefono o PC: non serve installare nulla.
 ## Come si gioca
 
 1. Apri `index.html` nel browser. Non serve installare niente: funziona anche con doppio clic, da telefono o da computer.
-2. Scegli quanti giocatori ci sono (da 2 a 8), i loro nomi, quante domande a testa e la difficoltà.
+2. Scegli quanti giocatori ci sono (da 1 a 8), i loro nomi, il campionato, quante domande a testa e la difficoltà.
 3. A ogni turno il telefono passa al giocatore successivo: leggi il nome del calciatore e scegli la sua squadra tra quattro opzioni.
 4. Ogni risposta esatta vale **100 punti**, più un bonus velocità fino a **50 punti** e un bonus serie fino a **60 punti**. Risposta sbagliata o tempo scaduto: zero punti.
 5. Alla fine vince chi ha più punti. In caso di parità contano le risposte esatte, poi la serie migliore e infine il tempo totale.
+
+In solitaria si gioca senza passaggi di mano: scegli un campionato e rispondi alle tue domande. Con la **modalità infinita** hai **3 vite** e la corsa continua finché non le perdi tutte (o finisci il tabellone).
 
 La partita dura all'incirca 3–15 minuti a seconda del numero di giocatori e delle domande scelte.
 
@@ -24,7 +26,8 @@ La partita dura all'incirca 3–15 minuti a seconda del numero di giocatori e de
 - **Invio** o **Spazio** per passare alla domanda successiva.
 - Pulsante audio in alto per attivare/disattivare i suoni.
 - Pulsante **Regole** per rileggere le istruzioni durante la partita (il timer si mette in pausa).
-- Su telefono, il sito è pensato per il passaggio di mano: ogni turno inizia con una schermata "pass" e finisce con il riepilogo.
+- Su telefono, il sito è pensato per il passaggio di mano: ogni turno inizia con una schermata "pass" e finisce con il riepilogo. In solitaria non ci sono schermate di passaggio.
+- Il filtro **Campionato** limita l'intero tabellone a uno dei 16 campionati disponibili; ogni partita pesca solo da lì.
 
 ## Dati
 
@@ -32,7 +35,7 @@ I dati sono inclusi nel file `game-data.js`, quindi il gioco funziona anche offl
 
 - **2.901 calciatori** provenienti da tutte le rose dei **99 club** presenti nel tabellone.
 - **16 paesi** di appartenenza dei club e **110 nazionalità** di calciatori.
-- **99 stemmi reali** dei club, salvati localmente nella cartella `assets/logos/`.
+- **99 stemmi reali** dei club, salvati localmente nella cartella `assets/logos/` e normalizzati su tela trasparente 250×250 px per non tagliare i loghi.
 - La stagione di riferimento è la **2026/27**, aggiornata a **novembre 2026**.
 - Le rose cambiano: i trasferimenti possono rendere una risposta "vecchia" dopo qualche settimana. La fonte principale è Wikipedia (pagine delle rose e infobox dei calciatori); il link alla voce è conservato nel campo `src` di ogni giocatore in `game-data.js`, quando disponibile.
 

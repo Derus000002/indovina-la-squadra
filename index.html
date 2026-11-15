@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f3ebdd">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="Indovina la Squadra: il quiz da tavolo per veri tifosi. Un telefono, i tuoi amici e 2.901 campioni da riconoscere.">
+  <meta name="description" content="Indovina la Squadra: il quiz per veri tifosi. Gioca da solo o con gli amici, scegli il campionato e riconosci 2.901 campioni.">
   <title>Indovina la Squadra — Il quiz da tavolo per veri tifosi</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,7 +65,7 @@
             </h1>
 
             <p class="hero-desc">
-              Un telefono, i tuoi amici e <strong><span data-player-count>2.901</span> campioni</strong> da riconoscere. Leggi il nome, scegli il club, colleziona punti. Chi ne sa di più alza la coppa.
+              Da solo o con gli amici: <strong><span data-player-count>2.901</span> campioni</strong>, 16 campionati e 99 club da riconoscere. Leggi il nome, scegli il club, colleziona punti. Chi ne sa di più alza la coppa.
             </p>
 
             <div class="hero-collage">
@@ -109,7 +109,7 @@
                 <div class="ticket-section count-section">
                   <div>
                     <span class="field-label">Quanti giocatori?</span>
-                    <p class="field-hint">Da 2 a 8 amici. Un telefono solo.</p>
+                    <p class="field-hint">Da 1 a 8. Anche in solitaria.</p>
                   </div>
                   <div class="stepper">
                     <button type="button" class="stepper-btn" id="countMinus" aria-label="Rimuovi un giocatore">−</button>
@@ -120,13 +120,37 @@
 
                 <div class="ticket-section names-section">
                   <div class="field-heading">
-                    <span class="field-label">Chi scende in campo?</span>
-                    <span class="field-note">Tocca un nome per cambiarlo</span>
+                    <span class="field-label" id="namesLabel">Chi scende in campo?</span>
+                    <span class="field-note" id="namesNote">Tocca un nome per cambiarlo</span>
                   </div>
                   <div class="name-grid" id="nameGrid"></div>
                 </div>
 
-                <div class="ticket-section">
+                <div class="ticket-section league-section">
+                  <div class="field-heading">
+                    <span class="field-label">Campionato</span>
+                    <span class="field-note" id="leagueNote">Tutti i campionati</span>
+                  </div>
+                  <div class="select-shell">
+                    <select class="league-select" id="leagueSelect" aria-label="Filtra i calciatori per campionato"></select>
+                    <span class="select-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="ticket-section solo-section" id="soloSection" hidden>
+                  <label class="toggle-row" for="infiniteToggle">
+                    <span class="toggle-copy">
+                      <span class="field-label">Modalità infinita</span>
+                      <span class="field-hint">3 vite. Ogni errore o timeout ne brucia una.</span>
+                    </span>
+                    <input class="toggle-input" id="infiniteToggle" type="checkbox">
+                    <span class="toggle-ui" aria-hidden="true"></span>
+                  </label>
+                </div>
+
+                <div class="ticket-section" id="questionsSection">
                   <div class="field-heading">
                     <span class="field-label">Domande a testa</span>
                     <span class="field-note" id="questionsNote">La distanza classica</span>
@@ -172,10 +196,10 @@
                   <span>✂</span>
                 </div>
 
-                <button class="start-button" type="submit">
+                <button class="start-button" id="startButton" type="submit">
                   <span class="start-button-copy">
-                    <span class="start-button-kicker">Tutto pronto?</span>
-                    <span class="start-button-label">Fischio d'inizio</span>
+                    <span class="start-button-kicker" id="startButtonKicker">Tutto pronto?</span>
+                    <span class="start-button-label" id="startButtonLabel">Fischio d'inizio</span>
                   </span>
                   <span class="start-button-arrow" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -230,13 +254,14 @@
             <div class="turn-chip" id="turnChip">
               <span class="turn-avatar" id="gameAvatar">M</span>
               <span class="turn-chip-copy">
-                <span class="turn-chip-label">Turno di</span>
+                <span class="turn-chip-label" id="turnChipLabel">Turno di</span>
                 <strong id="gamePlayerName">Marco</strong>
               </span>
               <span class="turn-score" id="gameScore">0 pt</span>
             </div>
             <div class="progress-block">
               <div class="progress-dots" id="progressDots" aria-hidden="true"></div>
+              <div class="progress-lives" id="progressLives" aria-live="polite" hidden></div>
               <span class="progress-text" id="progressText">Domanda 1 di 5</span>
             </div>
             <div class="timer-dial" id="timerDial" aria-hidden="true">
@@ -370,7 +395,7 @@
       <div class="rules-head">
         <span class="rules-sticker">Come si gioca</span>
         <h2>Un telefono.<br><em>Zero scuse.</em></h2>
-        <p>Si gioca in fila: ogni persona prende il telefono, risponde alle sue domande e poi lo passa al prossimo.</p>
+        <p>Si gioca in fila: ogni persona prende il telefono, risponde alle sue domande e poi lo passa al prossimo. Da soli si gioca dritto, senza passaggi.</p>
       </div>
       <ol class="rules-steps">
         <li>
@@ -392,6 +417,7 @@
         <div><span>Bonus serie</span><strong>fino a +60</strong></div>
       </div>
       <p class="rules-note"><span>20 secondi</span> per ogni domanda. Se sbagli o finisci il tempo, la serie riparte da zero e il club giusto viene mostrato.</p>
+      <p class="rules-solo"><span>Da solo?</span> Scegli un campionato, oppure accendi la modalità infinita: hai <strong>3 vite</strong> e la corsa continua finché non le perdi tutte.</p>
       <p class="rules-legal">Gli stemmi dei club appartengono ai rispettivi titolari e sono usati solo per identificare le squadre. <a href="credits.html">Crediti e licenze</a>.</p>
       <button class="primary-button rules-ok" id="rulesOkBtn" type="button">
         <span>Ho capito, si gioca</span>

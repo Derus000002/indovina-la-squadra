@@ -6,9 +6,12 @@
   const STORAGE_KEY = 'indovina-la-squadra:v1';
   const QUESTION_TIME = 20;
   const QUESTION_TIME_MS = QUESTION_TIME * 1000;
-  const MIN_PLAYERS = 2;
+  const MIN_PLAYERS = 1;
   const MAX_PLAYERS = 8;
+  const INFINITE_LIVES = 3;
+  const INFINITE_DECK_LIMIT = 400;
   const NAME_LIMIT = 18;
+  const numberFormat = new Intl.NumberFormat('it-IT', { useGrouping: 'always' });
 
   if (!DATA || !Array.isArray(DATA.players) || !Array.isArray(DATA.clubs)) {
     const main = document.querySelector('.main');
@@ -31,11 +34,21 @@
     countPlus: byId('countPlus'),
     playerCountOutput: byId('playerCountOutput'),
     nameGrid: byId('nameGrid'),
+    namesLabel: byId('namesLabel'),
+    namesNote: byId('namesNote'),
+    leagueSelect: byId('leagueSelect'),
+    leagueNote: byId('leagueNote'),
+    soloSection: byId('soloSection'),
+    infiniteToggle: byId('infiniteToggle'),
+    questionsSection: byId('questionsSection'),
     questionsSegment: byId('questionsSegment'),
     questionsNote: byId('questionsNote'),
     difficultyGrid: byId('difficultyGrid'),
     difficultyNote: byId('difficultyNote'),
     setupSummary: byId('setupSummary'),
+    startButton: byId('startButton'),
+    startButtonKicker: byId('startButtonKicker'),
+    startButtonLabel: byId('startButtonLabel'),
     heroStickerStack: byId('heroStickerStack'),
 
     handoffVisual: byId('handoffVisual'),
@@ -48,10 +61,12 @@
     startTurnLabel: byId('startTurnLabel'),
 
     turnChip: byId('turnChip'),
+    turnChipLabel: byId('turnChipLabel'),
     gameAvatar: byId('gameAvatar'),
     gamePlayerName: byId('gamePlayerName'),
     gameScore: byId('gameScore'),
     progressDots: byId('progressDots'),
+    progressLives: byId('progressLives'),
     progressText: byId('progressText'),
     timerDial: byId('timerDial'),
     timerValue: byId('timerValue'),
@@ -154,6 +169,12 @@
     if (!clubsByCountry.has(club.country)) clubsByCountry.set(club.country, []);
     clubsByCountry.get(club.country).push(club);
   });
+  const playersByLeague = new Map();
+  Object.keys(LEAGUES).forEach((country) => playersByLeague.set(country, []));
+  DATA.players.forEach((player) => {
+    const club = clubByName.get(player.club);
+    if (club && playersByLeague.has(club.country)) playersByLeague.get(club.country).push(player);
+  });
 
   const defaultName = (index) => `Giocatore ${index + 1}`;
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -216,6 +237,8 @@
     names: Array.from({ length: MAX_PLAYERS }, (_, index) => sanitizeName(savedNames[index], index)),
     perPlayer: [3, 5, 7].includes(Number(saved && saved.perPlayer)) ? Number(saved.perPlayer) : 5,
     difficulty: ['facile', 'medio', 'esperto'].includes(saved && saved.difficulty) ? saved.difficulty : 'medio',
+    league: saved && LEAGUES[saved.league] ? saved.league : 'all',
+    infinite: Boolean(saved && saved.infinite),
     sound: !saved || saved.sound !== false
   };
 
@@ -592,11 +615,48 @@
     )).join('');
   }
 
+  function leaguePool(league) {
+    if (!league || league === 'all') return DATA.players;
+    return playersByLeague.get(league) || [];
+  }
+
+  function leagueLabel(league) {
+    return !league || league === 'all' ? 'Tutti i campionati' : LEAGUES[league] || league;
+  }
+
+  function populateLeagueSelect() {
+    const options = [`<option value="all">Tutti i campionati · ${numberFormat.format(DATA.players.length)}</option>`];
+    Object.keys(LEAGUES).forEach((country) => {
+      const count = (playersByLeague.get(country) || []).length;
+      if (!count) return;
+      options.push(`<option value="${escapeHTML(country)}">${escapeHTML(LEAGUES[country])} · ${escapeHTML(country)} — ${numberFormat.format(count)}</option>`);
+    });
+    el.leagueSelect.innerHTML = options.join('');
+    if (!el.leagueSelect.querySelector(`option[value="${state.settings.league}"]`)) {
+      state.settings.league = 'all';
+    }
+    el.leagueSelect.value = state.settings.league;
+  }
+
   function renderSetup(options = {}) {
     const count = state.settings.count;
+    const solo = count === 1;
+    const infinite = solo && state.settings.infinite;
+    const available = leaguePool(state.settings.league).length;
     el.playerCountOutput.textContent = String(count);
     el.countMinus.disabled = count <= MIN_PLAYERS;
     el.countPlus.disabled = count >= MAX_PLAYERS;
+
+    el.namesLabel.textContent = solo ? 'Il tuo nome' : 'Chi scende in campo?';
+    el.namesNote.textContent = solo ? 'Come vuoi essere chiamato' : 'Tocca un nome per cambiarlo';
+    el.soloSection.hidden = !solo;
+    el.infiniteToggle.checked = infinite;
+    el.questionsSection.hidden = infinite;
+
+    el.leagueSelect.value = state.settings.league;
+    el.leagueNote.textContent = state.settings.league === 'all'
+      ? `${numberFormat.format(available)} calciatori`
+      : `${LEAGUES[state.settings.league]} · ${numberFormat.format(available)}`;
 
     el.nameGrid.innerHTML = '';
     for (let index = 0; index < count; index += 1) {
@@ -616,7 +676,8 @@
       input.maxLength = NAME_LIMIT;
       input.autocomplete = 'off';
       input.spellcheck = false;
-      input.setAttribute('aria-label', `Nome del giocatore ${index + 1}`);
+      input.placeholder = solo ? 'Il tuo nome' : '';
+      input.setAttribute('aria-label', solo ? 'Il tuo nome' : `Nome del giocatore ${index + 1}`);
       input.addEventListener('input', () => {
         state.settings.names[index] = sanitizeName(input.value, index);
         saveSettings();
@@ -630,7 +691,7 @@
 
       const srLabel = document.createElement('span');
       srLabel.className = 'sr-only';
-      srLabel.textContent = `Nome del giocatore ${index + 1}`;
+      srLabel.textContent = solo ? 'Il tuo nome' : `Nome del giocatore ${index + 1}`;
 
       label.append(badge, srLabel, input);
       el.nameGrid.append(label);
@@ -648,7 +709,17 @@
 
     const totalQuestions = count * state.settings.perPlayer;
     const minutes = Math.max(2, Math.ceil(totalQuestions / 4));
-    el.setupSummary.textContent = `${count} giocatori · ${totalQuestions} domande · ~${minutes} min`;
+    const leagueText = leagueLabel(state.settings.league);
+    if (infinite) {
+      el.setupSummary.textContent = `1 giocatore · infinita · 3 vite · ${leagueText}`;
+      el.startButtonKicker.textContent = 'Tre vite, zero limiti';
+      el.startButtonLabel.textContent = 'Inizia la corsa';
+    } else {
+      el.setupSummary.textContent = `${count} ${count === 1 ? 'giocatore' : 'giocatori'} · ${totalQuestions} domande · ${leagueText} · ~${minutes} min`;
+      el.startButtonKicker.textContent = solo ? 'Un giocatore, zero scuse' : 'Tutto pronto?';
+      el.startButtonLabel.textContent = solo ? 'Gioca da solo' : "Fischio d'inizio";
+    }
+    el.startButton.disabled = available < (infinite ? 1 : totalQuestions);
     if (options.save !== false) saveSettings();
   }
 
@@ -665,14 +736,17 @@
      QUESTION GENERATION
      --------------------------------------------------------- */
 
-  function samplePlayers(total, difficulty) {
+  function samplePlayers(total, difficulty, league = 'all') {
     const config = DIFFICULTIES[difficulty] || DIFFICULTIES.medio;
     const tiers = [1, 2, 3];
+    const eligible = leaguePool(league);
     const pools = {
-      1: shuffle(DATA.players.filter((player) => player.t === 1)),
-      2: shuffle(DATA.players.filter((player) => player.t === 2)),
-      3: shuffle(DATA.players.filter((player) => player.t === 3))
+      1: shuffle(eligible.filter((player) => player.t === 1)),
+      2: shuffle(eligible.filter((player) => player.t === 2)),
+      3: shuffle(eligible.filter((player) => player.t === 3))
     };
+    const clubCount = new Set(eligible.map((player) => player.club)).size;
+    const clubCap = Math.max(2, Math.ceil(total / Math.max(1, clubCount)));
     const selected = [];
     const used = new Set();
     const clubCounts = new Map();
@@ -701,7 +775,7 @@
       while (pool.length) {
         const player = pool.pop();
         if (used.has(player)) continue;
-        if ((clubCounts.get(player.club) || 0) >= 2) continue;
+        if ((clubCounts.get(player.club) || 0) >= clubCap) continue;
         used.add(player);
         clubCounts.set(player.club, (clubCounts.get(player.club) || 0) + 1);
         selected.push(player);
@@ -718,7 +792,8 @@
     }
 
     let guard = 0;
-    while (selected.length < total && guard < 500) {
+    const guardLimit = Math.max(80, total * 3);
+    while (selected.length < total && guard < guardLimit) {
       guard += 1;
       let picked = null;
       for (const tier of config.fallback) {
@@ -779,24 +854,37 @@
   }
 
   function createSession(config) {
-    const count = clamp(Number(config.count) || 3, MIN_PLAYERS, MAX_PLAYERS);
+    const count = clamp(Number(config.count) || MIN_PLAYERS, MIN_PLAYERS, MAX_PLAYERS);
+    const solo = count === 1;
+    const infinite = solo && Boolean(config.infinite);
     const perPlayer = [3, 5, 7].includes(Number(config.perPlayer)) ? Number(config.perPlayer) : 5;
     const difficulty = DIFFICULTIES[config.difficulty] ? config.difficulty : 'medio';
+    const league = config.league === 'all' || LEAGUES[config.league] ? config.league : 'all';
     const names = Array.from({ length: count }, (_, index) => sanitizeName(config.names && config.names[index], index));
     const total = count * perPlayer;
-    const sampled = samplePlayers(total, difficulty);
+    const eligible = leaguePool(league);
+    const sampled = samplePlayers(
+      infinite ? Math.min(eligible.length, INFINITE_DECK_LIMIT) : total,
+      difficulty,
+      league
+    );
 
-    if (sampled.length < total) {
+    if (!sampled.length || (!infinite && sampled.length < total)) {
       throw new Error('Not enough players to build the game.');
     }
 
-    const shuffledPlayers = shuffle(sampled);
     const blocks = [];
-    for (let index = 0; index < count; index += 1) {
-      const block = shuffledPlayers
-        .slice(index * perPlayer, (index + 1) * perPlayer)
-        .map(createQuestion);
-      blocks.push(block);
+    let deck = [];
+    if (infinite) {
+      deck = shuffle(sampled);
+    } else {
+      const shuffledPlayers = shuffle(sampled);
+      for (let index = 0; index < count; index += 1) {
+        const block = shuffledPlayers
+          .slice(index * perPlayer, (index + 1) * perPlayer)
+          .map(createQuestion);
+        blocks.push(block);
+      }
     }
 
     const players = names.map((name, index) => ({
@@ -811,6 +899,7 @@
       totalTime: 0,
       bestStreak: 0,
       currentStreak: 0,
+      lives: infinite ? INFINITE_LIVES : null,
       turnPoints: 0,
       turnCorrect: 0,
       turnAnswers: 0,
@@ -822,14 +911,22 @@
     return {
       players,
       blocks,
+      deck,
+      infiniteQuestions: [],
+      exhausted: false,
       count,
+      solo,
+      infinite,
+      league,
       perPlayer,
       difficulty,
-      totalQuestions: total,
+      totalQuestions: infinite ? null : total,
       config: {
         count,
         perPlayer,
         difficulty,
+        league,
+        infinite,
         names: names.slice()
       }
     };
@@ -841,6 +938,16 @@
 
   function currentBlock() {
     return state.game ? state.game.blocks[state.turnIndex] : [];
+  }
+
+  function questionAt(index) {
+    if (!state.game) return null;
+    if (!state.game.infinite) return currentBlock()[index] || null;
+    if (index >= state.game.deck.length) return null;
+    if (!state.game.infiniteQuestions[index]) {
+      state.game.infiniteQuestions[index] = createQuestion(state.game.deck[index]);
+    }
+    return state.game.infiniteQuestions[index];
   }
 
   function resetTurn(player) {
@@ -864,7 +971,12 @@
       state.turnIndex = 0;
       state.qIndex = 0;
       state.currentQuestion = null;
-      showHandoff();
+      if (game.solo) {
+        showScreen('game');
+        renderQuestion();
+      } else {
+        showHandoff();
+      }
     } catch (error) {
       console.error(error);
       showToast('Non riesco a preparare le domande. Riprova.');
@@ -937,6 +1049,7 @@
     const player = currentPlayer();
     if (!player) return;
     el.turnChip.style.setProperty('--pc', player.color);
+    el.turnChipLabel.textContent = state.game.solo ? 'In campo' : 'Turno di';
     el.gameAvatar.textContent = player.initials;
     el.gamePlayerName.textContent = player.name;
     el.gameScore.textContent = `${player.score} pt`;
@@ -947,8 +1060,22 @@
   function renderProgress() {
     if (!state.game) return;
     const player = currentPlayer();
+    if (state.game.infinite) {
+      const lives = Math.max(0, Number(player.lives) || 0);
+      el.progressDots.hidden = true;
+      el.progressLives.hidden = false;
+      el.progressLives.innerHTML = Array.from({ length: INFINITE_LIVES }, (_, index) => (
+        `<span class="life${index < lives ? '' : ' is-lost'}" aria-hidden="true">♥</span>`
+      )).join('');
+      el.progressLives.setAttribute('aria-label', `${lives} ${lives === 1 ? 'vita rimasta' : 'vite rimaste'} su ${INFINITE_LIVES}`);
+      el.progressText.textContent = `Domanda ${state.qIndex + 1} · Infinita`;
+      return;
+    }
+
     const total = state.game.perPlayer;
     const dots = [];
+    el.progressDots.hidden = false;
+    el.progressLives.hidden = true;
     for (let index = 0; index < total; index += 1) {
       let className = 'progress-dot';
       if (player.turnResults[index] === true) className += ' is-correct';
@@ -992,9 +1119,17 @@
   function renderQuestion() {
     if (!state.game) return;
     const player = currentPlayer();
-    const block = currentBlock();
-    const question = block[state.qIndex];
-    if (!player || !question) {
+    const question = questionAt(state.qIndex);
+    if (!player) {
+      showToast('Qualcosa non quadra nel tabellone. Ricomincia la partita.');
+      return;
+    }
+    if (!question) {
+      if (state.game.infinite) {
+        state.game.exhausted = true;
+        showFinal();
+        return;
+      }
       showToast('Qualcosa non quadra nel tabellone. Ricomincia la partita.');
       return;
     }
@@ -1065,6 +1200,7 @@
       player.correct += 1;
     } else {
       player.currentStreak = 0;
+      if (state.game.infinite) player.lives = Math.max(0, (player.lives || 0) - 1);
     }
 
     player.answered += 1;
@@ -1114,21 +1250,42 @@
   function showFeedback({ question, correct, isTimeout, points, speedBonus, streakBonus }) {
     const player = currentPlayer();
     const club = question.correctClub;
-    const isLast = state.qIndex >= state.game.perPlayer - 1;
+    const infinite = state.game.infinite;
+    const gameOver = infinite && player.lives <= 0;
+    const isLast = !infinite && state.qIndex >= state.game.perPlayer - 1;
     const duration = correct ? 2600 : 3800;
+    const livesLeft = infinite ? Math.max(0, player.lives) : 0;
     const titleOptions = correct
       ? ['Che colpo!', 'Palla in rete!', 'Da applausi!', 'Risposta da campione!']
-      : isTimeout
-        ? ['Tempo scaduto', 'Troppo lenti', 'Il tempo è volato']
-        : ['Fuori di poco', 'Palla fuori', 'Non ci siamo'];
+      : gameOver
+        ? ['Corsa finita', 'Fino a qui', 'L’ultima vita']
+        : isTimeout
+          ? ['Tempo scaduto', 'Troppo lenti', 'Il tempo è volato']
+          : ['Fuori di poco', 'Palla fuori', 'Non ci siamo'];
     const title = titleOptions[Math.floor(Math.random() * titleOptions.length)];
-    const kicker = correct ? 'Risposta esatta' : isTimeout ? 'Tempo scaduto' : 'Risposta sbagliata';
-    const subtitle = correct
-      ? (player.currentStreak >= 2 ? `Serie di ${player.currentStreak}. Continua così.` : 'Il club era quello giusto. Continua così.')
-      : isTimeout
-        ? `${club.name} era la risposta. Il tempo però è volato.`
+    const kicker = correct ? 'Risposta esatta' : gameOver ? 'Run conclusa' : isTimeout ? 'Tempo scaduto' : 'Risposta sbagliata';
+    let subtitle;
+    if (correct) {
+      const streakText = player.currentStreak >= 2 ? `Serie di ${player.currentStreak}. ` : '';
+      subtitle = infinite
+        ? `${streakText}${livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`}`
+        : `${streakText}Il club era quello giusto. Continua così.`;
+    } else if (gameOver) {
+      subtitle = `La corsa finisce qui: ${club.name} era la risposta.`;
+    } else if (isTimeout) {
+      subtitle = infinite
+        ? `${club.name} era la risposta. ${livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`}`
+        : `${club.name} era la risposta. Il tempo però è volato.`;
+    } else {
+      subtitle = infinite
+        ? `La risposta corretta era ${club.name}. ${livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`}`
         : `La risposta corretta era ${club.name}.`;
-    const nextLabel = isLast ? 'Vedi il turno' : 'Prossima domanda';
+    }
+    const nextLabel = infinite
+      ? (gameOver ? 'Vedi il risultato' : 'Prossima domanda')
+      : isLast
+        ? (state.game.solo ? 'Vedi il risultato' : 'Vedi il turno')
+        : 'Prossima domanda';
 
     el.feedback.classList.toggle('is-wrong', !correct);
     el.feedback.style.setProperty('--feedback-time', `${duration}ms`);
@@ -1221,9 +1378,21 @@
     state.phase = 'advancing';
     hideFeedback();
 
+    if (state.game.infinite) {
+      if (currentPlayer().lives <= 0) {
+        showFinal();
+      } else {
+        state.qIndex += 1;
+        renderQuestion();
+      }
+      return;
+    }
+
     if (state.qIndex + 1 < state.game.perPlayer) {
       state.qIndex += 1;
       renderQuestion();
+    } else if (state.game.solo) {
+      showFinal();
     } else {
       endTurn();
     }
@@ -1384,28 +1553,56 @@
     const second = ranked[1];
     const accuracy = accuracyFor(winner);
     const season = DATA.season || '2026/27';
+    const solo = state.game.solo;
+    const infinite = state.game.infinite;
+    const exhausted = state.game.exhausted;
     state.phase = 'final';
     gameTimer.stop();
     timerPauseReasons.clear();
     hideFeedback();
+    el.finalScreen.classList.toggle('is-solo', solo);
+    el.rematchBtn.querySelector('span').textContent = solo ? 'Rigioca' : 'Rivincita';
 
-    el.finalTitle.innerHTML = `<em>${escapeHTML(winner.name)}</em>,<br>alza la coppa.`;
-    el.finalDesc.textContent = `Dopo ${state.game.totalQuestions} domande, ${winner.name} chiude a ${winner.score} punti.${second ? ` Sul secondo gradino ${second.name} con ${second.score}.` : ''}${tiebreakSentence(winner, second)}`;
-    el.winnerCard.innerHTML = `<span class="winner-stamp">Campione<br>${escapeHTML(season)}</span>
-      <span class="winner-kicker"><span>★</span> Primo posto</span>
-      <span class="winner-initials">${escapeHTML(winner.initials)}</span>
-      <span class="winner-label">Campione della partita</span>
-      <div class="winner-score"><strong>${winner.score}</strong><span>punti</span></div>
-      <div class="winner-stats">
-        <span>${winner.correct}/${state.game.perPlayer} esatte</span>
-        <span>Serie ${winner.bestStreak}</span>
-        <span>${accuracy}% precisione</span>
-      </div>`;
+    if (solo) {
+      el.finalTitle.innerHTML = infinite
+        ? (exhausted
+          ? `<em>${escapeHTML(winner.name)}</em>,<br>tabellone finito.`
+          : `<em>${escapeHTML(winner.name)}</em>,<br>fino all'ultima vita.`)
+        : `<em>${escapeHTML(winner.name)}</em>,<br>partita chiusa.`;
+      el.finalDesc.textContent = infinite
+        ? `La corsa si ferma dopo ${winner.answered} domande, con ${winner.score} punti.${exhausted ? ' Hai svuotato il tabellone: non succede quasi mai.' : ' Le vite sono finite.'}`
+        : `Hai risposto a ${winner.answered} domande e chiuso a ${winner.score} punti. ${winner.correct === winner.answered ? 'En plein: non ne hai sbagliata una.' : `Serie migliore: ${winner.bestStreak}.`}`;
+      el.winnerCard.innerHTML = `<span class="winner-stamp">${infinite ? 'Infinita' : 'Solo'}<br>${escapeHTML(season)}</span>
+        <span class="winner-kicker"><span>★</span> ${infinite ? 'La tua corsa' : 'Sfida completata'}</span>
+        <span class="winner-initials">${escapeHTML(winner.initials)}</span>
+        <span class="winner-label">Punteggio finale</span>
+        <div class="winner-score"><strong>${winner.score}</strong><span>punti</span></div>
+        <div class="winner-stats">
+          ${infinite
+            ? `<span>${winner.answered} domande</span><span>${winner.correct} esatte</span><span>Serie ${winner.bestStreak}</span>`
+            : `<span>${winner.correct}/${winner.answered} esatte</span><span>Serie ${winner.bestStreak}</span><span>${accuracy}% precisione</span>`}
+        </div>`;
+      el.podium.innerHTML = '';
+      el.rankingList.innerHTML = '';
+    } else {
+      el.finalTitle.innerHTML = `<em>${escapeHTML(winner.name)}</em>,<br>alza la coppa.`;
+      el.finalDesc.textContent = `Dopo ${state.game.totalQuestions} domande, ${winner.name} chiude a ${winner.score} punti.${second ? ` Sul secondo gradino ${second.name} con ${second.score}.` : ''}${tiebreakSentence(winner, second)}`;
+      el.winnerCard.innerHTML = `<span class="winner-stamp">Campione<br>${escapeHTML(season)}</span>
+        <span class="winner-kicker"><span>★</span> Primo posto</span>
+        <span class="winner-initials">${escapeHTML(winner.initials)}</span>
+        <span class="winner-label">Campione della partita</span>
+        <div class="winner-score"><strong>${winner.score}</strong><span>punti</span></div>
+        <div class="winner-stats">
+          <span>${winner.correct}/${state.game.perPlayer} esatte</span>
+          <span>Serie ${winner.bestStreak}</span>
+          <span>${accuracy}% precisione</span>
+        </div>`;
+      renderPodium(ranked);
+      renderRanking(ranked);
+    }
 
-    renderPodium(ranked);
-    renderRanking(ranked);
     showScreen('final', el.finalTitle);
-    setDocumentTitle(`${winner.name} campione`);
+    setDocumentTitle(solo ? (infinite ? `Corsa di ${winner.name}` : `Partita di ${winner.name}`) : `${winner.name} campione`);
     audio.play('final');
     scheduleCelebration();
   }
@@ -1508,6 +1705,13 @@
 
   function shareText() {
     if (!state.game) return '';
+    if (state.game.solo) {
+      const player = state.game.players[0];
+      if (state.game.infinite) {
+        return `🏆 Indovina la Squadra — Modalità infinita\n${player.name}: ${player.score} pt · ${player.correct}/${player.answered} esatte · serie ${player.bestStreak}`;
+      }
+      return `🏆 Indovina la Squadra — Solo\n${player.name}: ${player.score} pt (${player.correct}/${state.game.perPlayer})`;
+    }
     const ranked = rankPlayers(state.game.players);
     const lines = ranked.map((player, index) => (
       `${index + 1}. ${player.name} — ${player.score} pt (${player.correct}/${state.game.perPlayer})`
@@ -1612,6 +1816,7 @@
     state.turnIndex = 0;
     state.qIndex = 0;
     state.currentQuestion = null;
+    el.finalScreen.classList.remove('is-solo');
     renderSetup({ save: false });
     showScreen('setup', heroTitle);
     setDocumentTitle('');
@@ -1626,7 +1831,7 @@
       returnToSetup();
       return;
     }
-    showToast('Partita in corso: finisci il turno.');
+    showToast('Partita in corso: finisci la partita.');
   }
 
   /* ---------------------------------------------------------
@@ -1687,6 +1892,19 @@
       renderSetup();
     });
 
+    el.leagueSelect.addEventListener('change', () => {
+      const value = el.leagueSelect.value;
+      state.settings.league = value === 'all' || LEAGUES[value] ? value : 'all';
+      audio.play('click');
+      renderSetup();
+    });
+
+    el.infiniteToggle.addEventListener('change', () => {
+      state.settings.infinite = el.infiniteToggle.checked;
+      audio.play('click');
+      renderSetup();
+    });
+
     el.setupForm.addEventListener('submit', (event) => {
       event.preventDefault();
       readNamesFromInputs();
@@ -1695,7 +1913,9 @@
         count: state.settings.count,
         names: state.settings.names.slice(),
         perPlayer: state.settings.perPlayer,
-        difficulty: state.settings.difficulty
+        difficulty: state.settings.difficulty,
+        league: state.settings.league,
+        infinite: state.settings.infinite
       };
       startGame(config);
     });
@@ -1790,6 +2010,7 @@
   function init() {
     hydrateData();
     renderHero();
+    populateLeagueSelect();
     renderSetup({ save: false });
     updateSoundUI();
     bindSetup();
