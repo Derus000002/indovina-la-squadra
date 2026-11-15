@@ -30,21 +30,31 @@ La partita dura all'incirca 3–15 minuti a seconda del numero di giocatori e de
 
 I dati sono inclusi nel file `game-data.js`, quindi il gioco funziona anche offline (le uniche risorse esterne sono i font di Google Fonts).
 
-- **281 calciatori** attivi.
-- **99 club** in **16 paesi**: 82 hanno almeno un calciatore nel tabellone, gli altri servono come alternative plausibili.
+- **2.901 calciatori** provenienti da tutte le rose dei **99 club** presenti nel tabellone.
+- **16 paesi** di appartenenza dei club e **110 nazionalità** di calciatori.
+- **99 stemmi reali** dei club, salvati localmente nella cartella `assets/logos/`.
 - La stagione di riferimento è la **2026/27**, aggiornata a **novembre 2026**.
-- Le rose cambiano: i trasferimenti possono rendere una risposta "vecchia" dopo qualche settimana. La fonte dei club è Wikipedia (infobox dei calciatori); il link alla voce è conservato nel campo `src` di ogni giocatore in `game-data.js`.
+- Le rose cambiano: i trasferimenti possono rendere una risposta "vecchia" dopo qualche settimana. La fonte principale è Wikipedia (pagine delle rose e infobox dei calciatori); il link alla voce è conservato nel campo `src` di ogni giocatore in `game-data.js`, quando disponibile.
+
+## Loghi e crediti
+
+Gli stemmi dei club sono marchi dei rispettivi titolari e sono usati esclusivamente per identificare le squadre nel gioco. Il progetto è amatoriale, gratuito e non è affiliato a club, leghe o federazioni.
+
+La pagina **`credits.html`** raccoglie crediti, fonti, note su licenze e privacy. Per segnalare un problema relativo a un'immagine, apri una issue sul repository GitHub.
 
 ## Rigenerare il tabellone
 
-Richiede Node.js 20+ e una connessione internet.
+Richiede Node.js 20+ e una connessione internet. Wikipedia limita le richieste molto ravvicinate: gli script gestiscono gli errori 429 con attese automatiche.
 
 ```bash
-node tools/fetch-players.mjs   # scarica i dati da Wikipedia in tools/raw-players.json
-node tools/build-data.mjs      # genera game-data.js
+node tools/fetch-players.mjs   # aggiorna la lista curata -> tools/raw-players.json
+node tools/fetch-squads.mjs    # scarica tutte le rose -> tools/raw-squad-players.json
+node tools/fetch-logos.mjs     # recupera solo gli stemmi mancanti -> tools/logos.json
+node tools/build-data.mjs      # unisce i dati e genera game-data.js
+node tools/audit-data.mjs      # controlla struttura, duplicati, stemmi e copertura
 ```
 
-`tools/fetch-players.mjs` usa la lista curata dei calciatori e salva i dati grezzi; `tools/build-data.mjs` normalizza nomi, club, nazionalità e età. La lista dei club e dei colori si trova in `tools/clubs.mjs`.
+`tools/fetch-players.mjs` usa la lista curata dei grandi nomi; `tools/fetch-squads.mjs` completa il tabellone con le rose attuali dei 99 club. `tools/clubs.mjs` contiene club, colori e prestigio; `tools/club-pages.mjs` mappa i club sulle voci Wikipedia. La build assegna i livelli di difficoltà, normalizza nazionalità, ruoli e nomi, e allega il logo a ogni club.
 
 ## Tecnologia
 
@@ -55,6 +65,8 @@ HTML, CSS e JavaScript puri. Nessun framework, nessun build step, nessuna chiama
 - `index.html` — struttura delle schermate.
 - `styles.css` — sistema visivo completo (sticker, ticket, responsive, animazioni).
 - `app.js` — flusso di gioco, domande, timer, punteggi, audio, classifica.
-- `game-data.js` — calciatori e club generati.
+- `game-data.js` — calciatori, club e percorsi degli stemmi generati.
+- `credits.html` — crediti, note legali e privacy.
 - `favicon.svg` — icona del sito.
-- `tools/` — pipeline di ricerca e generazione dei dati.
+- `assets/logos/` — i 99 stemmi reali dei club.
+- `tools/` — pipeline di ricerca, download e generazione dei dati.

@@ -124,15 +124,18 @@
   };
   const DIFFICULTIES = {
     facile: {
-      weights: { 1: 14, 2: 3, 3: 0 },
+      shares: { 1: 0.62, 2: 0.34, 3: 0.04 },
+      fallback: [2, 1, 3],
       note: 'Solo i nomi che conoscono tutti'
     },
     medio: {
-      weights: { 1: 5, 2: 3, 3: 1 },
+      shares: { 1: 0.25, 2: 0.5, 3: 0.25 },
+      fallback: [2, 1, 3],
       note: 'Il giusto mix di campioni'
     },
     esperto: {
-      weights: { 1: 1, 2: 3, 3: 7 },
+      shares: { 1: 0.05, 2: 0.3, 3: 0.65 },
+      fallback: [2, 3, 1],
       note: 'Per chi legge i tabellini'
     }
   };
@@ -530,6 +533,10 @@
   }
 
   function crestMarkup(club, extraClass = '') {
+    if (club.logo) {
+      const sizeClass = extraClass.includes('crest--large') ? ' club-badge--large' : '';
+      return `<span class="club-badge${sizeClass}" aria-hidden="true"><img src="${escapeHTML(club.logo)}" alt="" width="44" height="44" decoding="async"></span>`;
+    }
     const primary = safeColor(club.c1, '#172117');
     const secondary = safeColor(club.c2, '#d8ff3e');
     return `<span class="crest ${extraClass}" style="--club-a:${primary};--club-b:${secondary}" aria-hidden="true"><span class="crest-inner"><span class="crest-code">${escapeHTML(club.code)}</span></span></span>`;
@@ -659,32 +666,71 @@
      --------------------------------------------------------- */
 
   function samplePlayers(total, difficulty) {
-    const weights = DIFFICULTIES[difficulty].weights;
+    const config = DIFFICULTIES[difficulty] || DIFFICULTIES.medio;
+    const tiers = [1, 2, 3];
+    const pools = {
+      1: shuffle(DATA.players.filter((player) => player.t === 1)),
+      2: shuffle(DATA.players.filter((player) => player.t === 2)),
+      3: shuffle(DATA.players.filter((player) => player.t === 3))
+    };
     const selected = [];
     const used = new Set();
     const clubCounts = new Map();
+
+    const quotas = {};
+    const raw = tiers.map((tier) => ({
+      tier,
+      exact: total * (config.shares[tier] || 0),
+      count: 0
+    }));
+    raw.forEach((item) => {
+      item.count = Math.floor(item.exact);
+      item.fraction = item.exact - item.count;
+    });
+    let assigned = raw.reduce((sum, item) => sum + item.count, 0);
+    raw.slice().sort((first, second) => second.fraction - first.fraction).forEach((item) => {
+      if (assigned < total) {
+        item.count += 1;
+        assigned += 1;
+      }
+    });
+    raw.forEach((item) => { quotas[item.tier] = item.count; });
+
+    function takeFromTier(tier) {
+      const pool = pools[tier];
+      while (pool.length) {
+        const player = pool.pop();
+        if (used.has(player)) continue;
+        if ((clubCounts.get(player.club) || 0) >= 2) continue;
+        used.add(player);
+        clubCounts.set(player.club, (clubCounts.get(player.club) || 0) + 1);
+        selected.push(player);
+        return player;
+      }
+      return null;
+    }
+
+    for (const tier of tiers) {
+      const wanted = Math.min(quotas[tier] || 0, pools[tier].length);
+      for (let index = 0; index < wanted; index += 1) {
+        if (!takeFromTier(tier)) break;
+      }
+    }
+
     let guard = 0;
-
-    while (selected.length < total && guard < 5000) {
+    while (selected.length < total && guard < 500) {
       guard += 1;
-      let pool = DATA.players.filter((player) => (
-        !used.has(player) &&
-        (clubCounts.get(player.club) || 0) < 2 &&
-        (weights[player.t] || 0) > 0
-      ));
-      if (!pool.length) {
-        pool = DATA.players.filter((player) => !used.has(player) && (weights[player.t] || 0) > 0);
+      let picked = null;
+      for (const tier of config.fallback) {
+        picked = takeFromTier(tier);
+        if (picked) break;
       }
-      if (!pool.length) {
-        pool = DATA.players.filter((player) => !used.has(player));
+      if (picked) continue;
+      for (const tier of tiers) {
+        picked = takeFromTier(tier);
+        if (picked) break;
       }
-      if (!pool.length) break;
-
-      const poolWeights = pool.map((player) => Math.max(0.04, weights[player.t] || 1));
-      const chosen = pool[weightedIndex(pool, poolWeights)];
-      selected.push(chosen);
-      used.add(chosen);
-      clubCounts.set(chosen.club, (clubCounts.get(chosen.club) || 0) + 1);
+      if (!picked) break;
     }
 
     return selected;
@@ -921,7 +967,7 @@
         ${crestMarkup(club)}
         <span class="answer-copy">
           <span class="answer-name">${escapeHTML(club.name)}</span>
-          <span class="answer-league">${escapeHTML(leagueFor(club.country))} · ${escapeHTML(club.country)}</span>
+          <span class="answer-league"><span>${escapeHTML(leagueFor(club.country))}</span><span class="answer-country"> · ${escapeHTML(club.country)}</span></span>
         </span>
         <span class="answer-key" aria-hidden="true">${index + 1}</span>
       </button>`;
@@ -1729,14 +1775,15 @@
     const playerCount = DATA.players.length;
     const clubCount = DATA.clubs.length;
     const countryCount = new Set(DATA.clubs.map((club) => club.country)).size;
-    document.querySelectorAll('[data-player-count]').forEach((node) => { node.textContent = String(playerCount); });
-    document.querySelectorAll('[data-club-count]').forEach((node) => { node.textContent = String(clubCount); });
-    document.querySelectorAll('[data-country-count]').forEach((node) => { node.textContent = String(countryCount); });
+    const numberFormat = new Intl.NumberFormat('it-IT', { useGrouping: 'always' });
+    document.querySelectorAll('[data-player-count]').forEach((node) => { node.textContent = numberFormat.format(playerCount); });
+    document.querySelectorAll('[data-club-count]').forEach((node) => { node.textContent = numberFormat.format(clubCount); });
+    document.querySelectorAll('[data-country-count]').forEach((node) => { node.textContent = numberFormat.format(countryCount); });
     document.querySelectorAll('[data-season]').forEach((node) => { node.textContent = DATA.season || '2026/27'; });
     if (el.dataUpdated) el.dataUpdated.textContent = DATA.updated || 'novembre 2026';
 
     document.querySelectorAll('.ticker-track span').forEach((node) => {
-      node.innerHTML = `${playerCount} campioni <b>✦</b> ${clubCount} club <b>✦</b> ${countryCount} paesi <b>✦</b> una sola risposta giusta <b>✦</b>&nbsp;`;
+      node.innerHTML = `${numberFormat.format(playerCount)} campioni <b>✦</b> ${numberFormat.format(clubCount)} club <b>✦</b> ${numberFormat.format(countryCount)} paesi <b>✦</b> una sola risposta giusta <b>✦</b>&nbsp;`;
     });
   }
 

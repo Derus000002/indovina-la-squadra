@@ -2269,6 +2269,45 @@ kbd {
   font-size: 8px;
 }
 
+/* Real club crests sit on a small paper tile so colourful and
+   transparent logos read equally well against the answers. */
+
+.club-badge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 4px;
+  overflow: hidden;
+  border: 1.6px solid var(--ink);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.8), transparent 70%),
+    var(--paper-2);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.club-badge img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.club-badge--large {
+  width: 49px;
+  height: 49px;
+  padding: 5px;
+  border-width: 2px;
+  border-radius: 12px;
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+}
+
+.answer.is-muted .club-badge {
+  filter: saturate(0.45);
+}
+
 /* ---------------------------------------------------------
    FEEDBACK SHEET
    --------------------------------------------------------- */
@@ -3497,6 +3536,18 @@ kbd {
   font-weight: 800;
 }
 
+.rules-legal {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 8.5px;
+  line-height: 1.45;
+}
+
+.rules-legal a {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
 .rules-ok {
   width: 100%;
   margin-top: 17px;
@@ -3724,6 +3775,240 @@ kbd {
   to {
     transform: scaleX(0);
   }
+}
+
+/* ---------------------------------------------------------
+   CREDITS / LEGAL PAGE
+   --------------------------------------------------------- */
+
+.legal-main {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 34px) clamp(18px, 3.8vw, 54px) clamp(48px, 6vw, 82px);
+}
+
+.legal-sheet {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(27px, 5vw, 66px);
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+  background: var(--paper-2);
+  box-shadow: 10px 10px 0 var(--ink);
+}
+
+.legal-sheet::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  right: -70px;
+  width: 300px;
+  height: 300px;
+  opacity: 0.45;
+  background-image: radial-gradient(var(--ink) 1px, transparent 1.4px);
+  background-size: 13px 13px;
+  transform: rotate(-9deg);
+  pointer-events: none;
+}
+
+.legal-kicker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--lime);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-1deg);
+}
+
+.legal-title {
+  position: relative;
+  max-width: 760px;
+  margin: 22px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(52px, 9vw, 100px);
+  font-weight: 400;
+  line-height: 0.86;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.legal-title em {
+  font-family: var(--font-serif);
+  font-size: 1.12em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  text-transform: none;
+}
+
+.legal-lede {
+  position: relative;
+  max-width: 660px;
+  margin-top: 23px;
+  color: var(--ink-soft);
+  font-size: clamp(14px, 1.6vw, 17px);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.legal-crests {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.legal-crests span {
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 49px;
+  padding: 5px;
+  border: 1.5px solid var(--ink);
+  border-radius: 11px;
+  background: var(--paper);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.legal-crests img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.legal-section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.38fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 54px);
+  padding: clamp(23px, 3.2vw, 34px) 0;
+  border-top: 1.5px solid rgba(23, 33, 23, 0.24);
+}
+
+.legal-section:first-of-type {
+  margin-top: clamp(30px, 4vw, 44px);
+}
+
+.legal-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.7vw, 31px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.legal-section p,
+.legal-section li {
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.62;
+}
+
+.legal-section p + p {
+  margin-top: 12px;
+}
+
+.legal-section ul {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legal-section li {
+  position: relative;
+  padding-left: 17px;
+}
+
+.legal-section li + li {
+  margin-top: 8px;
+}
+
+.legal-section li::before {
+  content: "";
+  position: absolute;
+  top: 0.58em;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border: 1.3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+.legal-section strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.legal-section a {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.legal-note {
+  margin-top: 15px;
+  padding: 13px 15px;
+  border: 1.5px solid var(--ink);
+  border-left-width: 6px;
+  border-radius: 5px 12px 12px 5px;
+  background: var(--paper);
+  font-size: 12px !important;
+}
+
+.legal-back-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 17px;
+  margin-top: clamp(24px, 3.5vw, 38px);
+  padding-top: clamp(23px, 3vw, 31px);
+  border-top: 1.5px solid rgba(23, 33, 23, 0.24);
+}
+
+.legal-back-note {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.legal-cta {
+  text-decoration: none;
+}
+
+.legal-top-link {
+  min-height: 37px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 13px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper-2);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.legal-top-link:hover {
+  background: var(--lime);
 }
 
 /* ---------------------------------------------------------
@@ -4546,6 +4831,20 @@ kbd {
     font-size: 6px;
   }
 
+  .club-badge {
+    width: 36px;
+    height: 36px;
+    padding: 3.5px;
+    border-radius: 9px;
+  }
+
+  .club-badge--large {
+    width: 44px;
+    height: 44px;
+    padding: 4px;
+    border-radius: 10px;
+  }
+
   .answer-name {
     font-size: 13px;
   }
@@ -4553,6 +4852,10 @@ kbd {
   .answer-league {
     margin-top: 2px;
     font-size: 6.5px;
+  }
+
+  .answer-country {
+    display: none;
   }
 
   .answer-key {
@@ -4967,6 +5270,23 @@ kbd {
     height: 33px;
   }
 
+  .club-badge {
+    width: 32px;
+    height: 32px;
+    padding: 3px;
+    border-width: 1.4px;
+    border-radius: 8px;
+    box-shadow: 1.5px 1.5px 0 var(--ink);
+  }
+
+  .club-badge--large {
+    width: 40px;
+    height: 40px;
+    padding: 4px;
+    border-width: 1.7px;
+    border-radius: 9px;
+  }
+
   .turn-chip strong {
     max-width: 105px;
     font-size: 17px;
@@ -5026,6 +5346,74 @@ kbd {
 
   .confetti {
     display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .legal-main {
+    padding: 10px 12px 42px;
+  }
+
+  .legal-sheet {
+    padding: 25px 19px 28px;
+    border-radius: 21px;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .legal-sheet::before {
+    width: 190px;
+    height: 190px;
+    top: -70px;
+    right: -55px;
+  }
+
+  .legal-title {
+    margin-top: 17px;
+    font-size: clamp(47px, 15.5vw, 66px);
+  }
+
+  .legal-lede {
+    margin-top: 17px;
+    font-size: 13.5px;
+  }
+
+  .legal-crests {
+    gap: 6px;
+    margin-top: 21px;
+  }
+
+  .legal-crests span {
+    width: 41px;
+    height: 41px;
+    padding: 4px;
+    border-radius: 9px;
+  }
+
+  .legal-section {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 20px 0;
+  }
+
+  .legal-section:first-of-type {
+    margin-top: 24px;
+  }
+
+  .legal-section h2 {
+    font-size: 25px;
+  }
+
+  .legal-section p,
+  .legal-section li {
+    font-size: 12.5px;
+  }
+
+  .legal-back-row {
+    align-items: stretch;
+  }
+
+  .legal-cta {
+    width: 100%;
   }
 }
 
