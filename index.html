@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3ebdd">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Indovina la Squadra: il quiz da tavolo per veri tifosi. Un telefono, i tuoi amici e 281 campioni da riconoscere.">
+  <title>Indovina la Squadra — Il quiz da tavolo per veri tifosi</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-screen="setup">
+  <div class="app">
+    <header class="topbar">
+      <button class="brand" id="brandBtn" type="button" aria-label="Indovina la Squadra — torna all'inizio">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="19" fill="currentColor"/>
+            <path d="M24 12.5 31 17.5 28.3 25.8H19.7L17 17.5 24 12.5Z" fill="#d8ff3e" stroke="#172117" stroke-width="1.8"/>
+            <path d="m31 17.5 6.4 3.2m-3.2 8-5.5 4.5m-9.4 0L14 28.7m-3.3-8L17 17.5" stroke="#d8ff3e" stroke-width="1.8"/>
+          </svg>
+        </span>
+        <span class="brand-wordmark">Indovina <span>la Squadra</span></span>
+      </button>
+      <div class="topbar-actions">
+        <span class="season-chip">Stagione <strong data-season>2026/27</strong></span>
+        <button class="icon-button rules-trigger" id="rulesBtn" type="button" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.9"/>
+            <path d="M9.7 9.2c.2-1.3 1.1-2.1 2.4-2.1 1.4 0 2.4.9 2.4 2.2 0 1.1-.6 1.7-1.7 2.4-.9.5-1.2 1-1.2 1.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+            <circle cx="11.6" cy="17" r="1.1" fill="currentColor"/>
+          </svg>
+          <span>Regole</span>
+        </button>
+        <button class="sound-button" id="soundBtn" type="button" aria-pressed="true">
+          <span class="sound-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 9.3v5.4h3.7l4.6 3.8V5.5L7.7 9.3H4Z" fill="currentColor"/>
+              <path class="sound-waves" d="M15.5 8.8c1.7 1.7 1.7 4.7 0 6.4M18.1 6.2c3 3 3 8.6 0 11.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path class="sound-slash" d="m15 9 5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="sound-label">Audio on</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="screen setup-screen" data-screen="setup" id="setupScreen">
+        <div class="setup-grid">
+          <div class="hero">
+            <div class="hero-kicker">
+              <span class="live-dot" aria-hidden="true"></span>
+              <span>Il quiz da tavolo per veri tifosi</span>
+              <span class="hero-edition">Ed. 01</span>
+            </div>
+
+            <h1 class="hero-title">
+              <span class="hero-line hero-line--one">Indovina</span>
+              <span class="hero-line hero-line--two"><em>la</em> <span class="highlight-word">Squadra</span></span>
+            </h1>
+
+            <p class="hero-desc">
+              Un telefono, i tuoi amici e <strong><span data-player-count>281</span> campioni</strong> da riconoscere. Leggi il nome, scegli il club, colleziona punti. Chi ne sa di più alza la coppa.
+            </p>
+
+            <div class="hero-collage">
+              <div class="sticker-stack" id="heroStickerStack" aria-hidden="true"></div>
+              <div class="hero-collage-side">
+                <div class="scribble-sticker">
+                  <span class="scribble-time">20″</span>
+                  <span>per risposta.<br>Niente ripensamenti.</span>
+                </div>
+                <div class="hero-quote">
+                  <span class="quote-mark">“</span>
+                  <p>Quattro club. Una sola risposta giusta.</p>
+                </div>
+                <div class="hero-counts">
+                  <div><strong data-club-count>99</strong><span>club</span></div>
+                  <div><strong data-country-count>16</strong><span>paesi</span></div>
+                  <div><strong>1—8</strong><span>giocatori</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ticket-shell">
+            <div class="ticket-ribbon" aria-hidden="true">Prepara la partita</div>
+            <div class="tape tape--top" aria-hidden="true"></div>
+            <div class="ticket">
+              <div class="ticket-head">
+                <div>
+                  <span class="ticket-overline">Matchday pass</span>
+                  <span class="ticket-title">La tua partita</span>
+                </div>
+                <div class="ticket-serial">
+                  <span>Stagione <b data-season>2026/27</b></span>
+                  <svg class="mini-barcode" viewBox="0 0 86 26" aria-hidden="true">
+                    <path d="M2 3v20M6 3v20M9 3v20M14 3v20M17 3v20M21 4v18M25 3v20M29 3v20M33 4v18M37 3v20M40 3v20M45 3v20M49 4v18M53 3v20M56 3v20M60 3v20M65 3v20M68 4v18M73 3v20M77 3v20M81 3v20M84 4v18" stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                </div>
+              </div>
+
+              <form id="setupForm" class="setup-form" novalidate>
+                <div class="ticket-section count-section">
+                  <div>
+                    <span class="field-label">Quanti giocatori?</span>
+                    <p class="field-hint">Da 2 a 8 amici. Un telefono solo.</p>
+                  </div>
+                  <div class="stepper">
+                    <button type="button" class="stepper-btn" id="countMinus" aria-label="Rimuovi un giocatore">−</button>
+                    <output class="stepper-value" id="playerCountOutput" aria-live="polite">3</output>
+                    <button type="button" class="stepper-btn" id="countPlus" aria-label="Aggiungi un giocatore">+</button>
+                  </div>
+                </div>
+
+                <div class="ticket-section names-section">
+                  <div class="field-heading">
+                    <span class="field-label">Chi scende in campo?</span>
+                    <span class="field-note">Tocca un nome per cambiarlo</span>
+                  </div>
+                  <div class="name-grid" id="nameGrid"></div>
+                </div>
+
+                <div class="ticket-section">
+                  <div class="field-heading">
+                    <span class="field-label">Domande a testa</span>
+                    <span class="field-note" id="questionsNote">La distanza classica</span>
+                  </div>
+                  <div class="segmented" id="questionsSegment" role="group" aria-label="Numero di domande per giocatore">
+                    <button type="button" class="segment" data-value="3" aria-pressed="false">
+                      <strong>3</strong><span>Veloce</span>
+                    </button>
+                    <button type="button" class="segment" data-value="5" aria-pressed="true">
+                      <strong>5</strong><span>Classica</span>
+                    </button>
+                    <button type="button" class="segment" data-value="7" aria-pressed="false">
+                      <strong>7</strong><span>Maratona</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="ticket-section">
+                  <div class="field-heading">
+                    <span class="field-label">Livello di difficoltà</span>
+                    <span class="field-note" id="difficultyNote">Il giusto mix</span>
+                  </div>
+                  <div class="difficulty-grid" id="difficultyGrid" role="group" aria-label="Difficoltà">
+                    <button type="button" class="difficulty-card" data-difficulty="facile" aria-pressed="false">
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <strong>Facile</strong>
+                      <span class="difficulty-desc">I nomi che conoscono tutti</span>
+                    </button>
+                    <button type="button" class="difficulty-card" data-difficulty="medio" aria-pressed="true">
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <strong>Medio</strong>
+                      <span class="difficulty-desc">Il giusto mix di campioni</span>
+                    </button>
+                    <button type="button" class="difficulty-card" data-difficulty="esperto" aria-pressed="false">
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <strong>Esperto</strong>
+                      <span class="difficulty-desc">Per chi legge i tabellini</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="tear-line" aria-hidden="true">
+                  <span>✂</span>
+                </div>
+
+                <button class="start-button" type="submit">
+                  <span class="start-button-copy">
+                    <span class="start-button-kicker">Tutto pronto?</span>
+                    <span class="start-button-label">Fischio d'inizio</span>
+                  </span>
+                  <span class="start-button-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </button>
+
+                <div class="setup-summary">
+                  <span id="setupSummary">3 giocatori · 15 domande · ~4 min</span>
+                  <span class="summary-season">Stagione <b data-season>2026/27</b></span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticker" aria-hidden="true">
+          <div class="ticker-track">
+            <span>281 campioni <b>✦</b> 99 club <b>✦</b> 16 paesi <b>✦</b> una sola risposta giusta <b>✦</b>&nbsp;</span>
+            <span>281 campioni <b>✦</b> 99 club <b>✦</b> 16 paesi <b>✦</b> una sola risposta giusta <b>✦</b>&nbsp;</span>
+            <span>281 campioni <b>✦</b> 99 club <b>✦</b> 16 paesi <b>✦</b> una sola risposta giusta <b>✦</b>&nbsp;</span>
+            <span>281 campioni <b>✦</b> 99 club <b>✦</b> 16 paesi <b>✦</b> una sola risposta giusta <b>✦</b>&nbsp;</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen handoff-screen" data-screen="handoff" id="handoffScreen" hidden>
+        <div class="stage handoff-stage">
+          <div class="handoff-visual" id="handoffVisual"></div>
+          <div class="handoff-copy">
+            <div class="eyebrow" id="handoffEyebrow">Turno 1 di 3</div>
+            <h1 class="handoff-title" tabindex="-1"><span id="handoffLead">Passa il telefono a</span><br><em id="handoffName">Marco</em><span class="big-dot">.</span></h1>
+            <p class="handoff-desc" id="handoffDesc">Quando sei pronto, tocca il pulsante. Gli altri: niente sbirciatine.</p>
+            <div class="turn-facts">
+              <span><strong id="handoffQuestions">5</strong> domande</span>
+              <span><strong>20″</strong> a risposta</span>
+              <span><strong>4</strong> club</span>
+            </div>
+            <button class="primary-button handoff-button" id="startTurnBtn" type="button">
+              <span id="startTurnLabel">Sono Marco, si parte</span>
+              <span class="button-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </button>
+            <p class="handoff-footnote"><span class="footnote-star">★</span> Il club è quello attuale, stagione <span data-season>2026/27</span>. Occhio alle trappole.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen game-screen" data-screen="game" id="gameScreen" hidden>
+        <div class="stage game-stage">
+          <div class="game-meta">
+            <div class="turn-chip" id="turnChip">
+              <span class="turn-avatar" id="gameAvatar">M</span>
+              <span class="turn-chip-copy">
+                <span class="turn-chip-label">Turno di</span>
+                <strong id="gamePlayerName">Marco</strong>
+              </span>
+              <span class="turn-score" id="gameScore">0 pt</span>
+            </div>
+            <div class="progress-block">
+              <div class="progress-dots" id="progressDots" aria-hidden="true"></div>
+              <span class="progress-text" id="progressText">Domanda 1 di 5</span>
+            </div>
+            <div class="timer-dial" id="timerDial" aria-hidden="true">
+              <span class="timer-inner">
+                <strong id="timerValue">20</strong>
+                <small>sec</small>
+              </span>
+            </div>
+          </div>
+
+          <div class="game-grid">
+            <div class="game-sticker" id="gameSticker"></div>
+
+            <div class="question-panel">
+              <div class="question-panel-head">
+                <span class="question-tag">Dove gioca?</span>
+                <span class="streak-chip" id="streakChip" hidden></span>
+              </div>
+              <h2 class="question-title" id="questionTitle" tabindex="-1">Dove gioca <em>Lamine Yamal</em>?</h2>
+              <div class="answers" id="answers" role="group" aria-labelledby="questionTitle"></div>
+              <div class="key-hint">
+                <span><kbd>1</kbd>—<kbd>4</kbd> per rispondere</span>
+                <span class="key-hint-time">Più veloce = più punti</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen summary-screen" data-screen="summary" id="summaryScreen" hidden>
+        <div class="stage summary-stage">
+          <div class="summary-head">
+            <div class="eyebrow" id="summaryEyebrow">Turno 1 concluso</div>
+            <h1 class="summary-title" tabindex="-1" id="summaryTitle">Che turno, <em>Marco</em>.</h1>
+            <p class="summary-desc" id="summaryDesc">Un turno da ricordare.</p>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-left">
+              <div class="summary-score-card">
+                <span class="summary-score-label">Punti guadagnati</span>
+                <strong class="summary-score-value" id="summaryPoints">+420</strong>
+                <span class="summary-score-total" id="summaryTotal">Totale: 420 pt</span>
+                <span class="summary-score-stamp" aria-hidden="true">Turno<br>completo</span>
+              </div>
+              <div class="summary-stats" id="summaryStats"></div>
+              <div class="summary-cta">
+                <button class="primary-button" id="summaryNextBtn" type="button">
+                  <span id="summaryNextLabel">Passa a Giulia</span>
+                  <span class="button-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </button>
+                <p class="summary-next-note" id="summaryNextNote">La classifica si aggiorna. Niente scuse.</p>
+              </div>
+            </div>
+            <aside class="leaderboard-card">
+              <div class="leaderboard-head">
+                <div>
+                  <span class="leaderboard-kicker">La classifica</span>
+                  <h2>Dopo il turno <span id="leaderboardTurn">1</span></h2>
+                </div>
+                <span class="leaderboard-live"><i></i> live</span>
+              </div>
+              <div class="leaderboard-list" id="leaderboardList"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen final-screen" data-screen="final" id="finalScreen" hidden>
+        <div class="stage final-stage">
+          <div class="final-head">
+            <div class="eyebrow">Fischio finale</div>
+            <h1 class="final-title" tabindex="-1" id="finalTitle">C'è un campione.</h1>
+            <p class="final-desc" id="finalDesc">La classifica finale, senza appello.</p>
+          </div>
+
+          <div class="final-grid">
+            <div class="final-winner">
+              <div class="winner-card" id="winnerCard"></div>
+              <div class="final-actions">
+                <button class="primary-button" id="rematchBtn" type="button">
+                  <span>Rivincita</span>
+                  <span class="button-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </button>
+                <button class="secondary-button" id="shareBtn" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Condividi
+                </button>
+                <button class="text-button" id="newGameBtn" type="button">Nuova partita</button>
+              </div>
+            </div>
+
+            <div class="final-side">
+              <div class="podium-card">
+                <div class="podium-head">
+                  <span class="leaderboard-kicker">Sul podio</span>
+                  <h2>La foto di rito</h2>
+                </div>
+                <div class="podium" id="podium"></div>
+              </div>
+              <div class="ranking-card">
+                <div class="ranking-head">
+                  <div>
+                    <span class="leaderboard-kicker">Tutti i numeri</span>
+                    <h2>Classifica completa</h2>
+                  </div>
+                  <span class="ranking-season">Stagione <b data-season>2026/27</b></span>
+                </div>
+                <div class="ranking-list" id="rankingList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span><strong>Indovina la Squadra</strong> — l'almanacco del calcio da divano.</span>
+      <span>Club aggiornati a <span id="dataUpdated">novembre 2026</span> · Fonte <a href="https://en.wikipedia.org/" target="_blank" rel="noopener noreferrer">Wikipedia</a></span>
+    </footer>
+  </div>
+
+  <dialog class="rules-dialog" id="rulesDialog">
+    <div class="rules-sheet">
+      <button class="dialog-close" id="closeRulesBtn" type="button" aria-label="Chiudi le regole">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="rules-head">
+        <span class="rules-sticker">Come si gioca</span>
+        <h2>Un telefono.<br><em>Zero scuse.</em></h2>
+        <p>Si gioca in fila: ogni persona prende il telefono, risponde alle sue domande e poi lo passa al prossimo.</p>
+      </div>
+      <ol class="rules-steps">
+        <li>
+          <span class="rule-number">01</span>
+          <div><strong>Passa il telefono</strong><p>Quando è il tuo turno, tocca “Si parte” e tieni lo schermo per te.</p></div>
+        </li>
+        <li>
+          <span class="rule-number">02</span>
+          <div><strong>Riconosci il campione</strong><p>Guarda la figurina, poi scegli il suo club attuale tra quattro opzioni.</p></div>
+        </li>
+        <li>
+          <span class="rule-number">03</span>
+          <div><strong>Fai punti, non rumore</strong><p>Risposta esatta: 100 punti. Velocità e serie di risposte giuste valgono un bel bonus.</p></div>
+        </li>
+      </ol>
+      <div class="rules-score">
+        <div><span>Risposta esatta</span><strong>+100</strong></div>
+        <div><span>Bonus velocità</span><strong>fino a +50</strong></div>
+        <div><span>Bonus serie</span><strong>fino a +60</strong></div>
+      </div>
+      <p class="rules-note"><span>20 secondi</span> per ogni domanda. Se sbagli o finisci il tempo, la serie riparte da zero e il club giusto viene mostrato.</p>
+      <button class="primary-button rules-ok" id="rulesOkBtn" type="button">
+        <span>Ho capito, si gioca</span>
+        <span class="button-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+    </div>
+  </dialog>
+
+  <div class="feedback" id="feedback" hidden aria-live="assertive"></div>
+  <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="noscript">Per giocare serve JavaScript: attivalo e ricarica la pagina.</div>
+  </noscript>
+
+  <script src="game-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
