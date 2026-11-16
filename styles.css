@@ -1192,7 +1192,7 @@ svg {
   border-left: 2px solid var(--ink);
   background: linear-gradient(
     to bottom,
-    var(--club-a, var(--ink)) 0 50%,
+    var(--club-a, var(--pc, var(--paper-2))) 0 50%,
     var(--club-b, var(--paper-2)) 50% 100%
   );
 }
@@ -2064,7 +2064,7 @@ svg {
   min-width: 0;
   min-height: 71px;
   padding: 9px 28px 9px 9px;
-  overflow: hidden;
+  overflow: visible;
   border: 1.7px solid var(--ink);
   border-radius: 13px;
   background: var(--paper);
@@ -2276,12 +2276,12 @@ kbd {
   display: grid;
   place-items: center;
   flex: none;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   padding: 4px;
-  overflow: hidden;
+  overflow: visible;
   border: 1.6px solid var(--ink);
-  border-radius: 10px;
+  border-radius: 11px;
   background:
     radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.8), transparent 70%),
     var(--paper-2);
@@ -2293,11 +2293,12 @@ kbd {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  object-position: center;
 }
 
 .club-badge--large {
-  width: 49px;
-  height: 49px;
+  width: 56px;
+  height: 56px;
   padding: 5px;
   border-width: 2px;
   border-radius: 12px;
@@ -3551,6 +3552,32 @@ kbd {
 .rules-ok {
   width: 100%;
   margin-top: 17px;
+}
+
+.rules-abort {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.rules-abort:hover {
+  color: var(--coral);
+}
+
+.rules-abort[hidden] {
+  display: none;
 }
 
 /* ---------------------------------------------------------
@@ -4832,17 +4859,17 @@ kbd {
   }
 
   .club-badge {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     padding: 3.5px;
-    border-radius: 9px;
+    border-radius: 10px;
   }
 
   .club-badge--large {
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     padding: 4px;
-    border-radius: 10px;
+    border-radius: 11px;
   }
 
   .answer-name {
@@ -5271,8 +5298,8 @@ kbd {
   }
 
   .club-badge {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     padding: 3px;
     border-width: 1.4px;
     border-radius: 8px;
@@ -5280,8 +5307,8 @@ kbd {
   }
 
   .club-badge--large {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     padding: 4px;
     border-width: 1.7px;
     border-radius: 9px;
@@ -5300,7 +5327,7 @@ kbd {
     font-size: 60px;
   }
 
-  .summary-stamp {
+  .summary-score-stamp {
     width: 60px;
     height: 60px;
   }
@@ -5320,28 +5347,6 @@ kbd {
     transform: none;
     box-shadow: 4px 4px 0 var(--ink);
   }
-}
-
-.club-badge {
-  width: 46px;
-  height: 46px;
-  padding: 4px;
-  overflow: visible;
-  border-radius: 11px;
-}
-
-.club-badge img {
-  object-position: center;
-}
-
-.club-badge--large {
-  width: 56px;
-  height: 56px;
-  padding: 5px;
-}
-
-.answer {
-  overflow: visible;
 }
 
 .select-shell {
@@ -5538,18 +5543,6 @@ kbd {
 }
 
 @media (max-width: 620px) {
-  .club-badge {
-    width: 40px;
-    height: 40px;
-    padding: 3.5px;
-  }
-
-  .club-badge--large {
-    width: 50px;
-    height: 50px;
-    padding: 4px;
-  }
-
   .league-select {
     min-height: 48px;
     font-size: 11px;
@@ -5557,20 +5550,6 @@ kbd {
 
   .final-screen.is-solo .final-actions {
     justify-content: stretch;
-  }
-}
-
-@media (max-width: 390px) {
-  .club-badge {
-    width: 34px;
-    height: 34px;
-    padding: 3px;
-  }
-
-  .club-badge--large {
-    width: 44px;
-    height: 44px;
-    padding: 4px;
   }
 }
 

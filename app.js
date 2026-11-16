@@ -105,6 +105,7 @@
     rulesDialog: byId('rulesDialog'),
     closeRulesBtn: byId('closeRulesBtn'),
     rulesOkBtn: byId('rulesOkBtn'),
+    abortGameBtn: byId('abortGameBtn'),
     soundBtn: byId('soundBtn'),
     dataUpdated: byId('dataUpdated')
   };
@@ -348,6 +349,9 @@
 
   function vibrate(pattern) {
     try {
+      // Chrome logs a console error when vibrate() runs without a user gesture;
+      // skip it until the player has actually interacted with the page.
+      if (!navigator.userActivation?.hasBeenActive) return;
       if (navigator.vibrate) navigator.vibrate(pattern);
     } catch (error) {
       /* Ignore unsupported haptics. */
@@ -575,8 +579,10 @@
     const meta = [player.pos, player.age ? `${player.age} anni` : ''].filter(Boolean).join(' · ');
     const label = `Figurina di ${player.name}, ${player.nat}, ${player.pos}${player.age ? `, ${player.age} anni` : ''}, ${stars} ${stars === 1 ? 'stella' : 'stelle'}`;
     const decorative = options.decorative ? ' aria-hidden="true"' : ` role="group" aria-label="${escapeHTML(label)}"`;
+    const clubA = options.hideClubColors ? 'rgba(23, 33, 23, 0.2)' : safeColor(club.c1, '#172117');
+    const clubB = options.hideClubColors ? 'rgba(23, 33, 23, 0.08)' : safeColor(club.c2, '#d8ff3e');
 
-    return `<article class="player-sticker ${nameClass}" style="--pc:${cardColor};--club-a:${safeColor(club.c1, '#172117')};--club-b:${safeColor(club.c2, '#d8ff3e')}"${decorative}>
+    return `<article class="player-sticker ${nameClass}" style="--pc:${cardColor};--club-a:${clubA};--club-b:${clubB}"${decorative}>
       <span class="sticker-edge" aria-hidden="true"></span>
       <div class="sticker-top">
         <span class="sticker-flag">${escapeHTML(player.flag)} ${escapeHTML(player.nat)}</span>
@@ -1138,7 +1144,7 @@
     state.currentQuestion = question;
     state.phase = 'answering';
 
-    el.gameSticker.innerHTML = stickerMarkup(question.player);
+    el.gameSticker.innerHTML = stickerMarkup(question.player, { hideClubColors: true });
     el.gameSticker.style.setProperty('--player-color', player.color);
     el.questionTitle.innerHTML = `Dove gioca <em>${escapeHTML(question.player.name)}</em>?`;
     renderAnswers(question);
@@ -1250,6 +1256,11 @@
   function showFeedback({ question, correct, isTimeout, points, speedBonus, streakBonus }) {
     const player = currentPlayer();
     const club = question.correctClub;
+    const revealedSticker = el.gameSticker.querySelector('.player-sticker');
+    if (revealedSticker) {
+      revealedSticker.style.setProperty('--club-a', safeColor(club.c1, '#172117'));
+      revealedSticker.style.setProperty('--club-b', safeColor(club.c2, '#d8ff3e'));
+    }
     const infinite = state.game.infinite;
     const gameOver = infinite && player.lives <= 0;
     const isLast = !infinite && state.qIndex >= state.game.perPlayer - 1;
@@ -1287,6 +1298,14 @@
         ? (state.game.solo ? 'Vedi il risultato' : 'Vedi il turno')
         : 'Prossima domanda';
 
+    const pointsLabel = correct && speedBonus > 0 && streakBonus > 0
+      ? 'velocità + serie'
+      : correct && speedBonus > 0
+        ? 'bonus velocità'
+        : correct && streakBonus > 0
+          ? 'bonus serie'
+          : 'punti';
+
     el.feedback.classList.toggle('is-wrong', !correct);
     el.feedback.style.setProperty('--feedback-time', `${duration}ms`);
     el.feedback.innerHTML = `<div class="feedback-main">
@@ -1304,7 +1323,7 @@
       </div>
       <div class="feedback-points">
         <strong>${points > 0 ? `+${points}` : '0'}</strong>
-        <span>${correct && (speedBonus + streakBonus > 0) ? `velocità + serie` : 'punti'}</span>
+        <span>${pointsLabel}</span>
       </div>
       <button class="feedback-next" type="button">${escapeHTML(nextLabel)}<span class="button-arrow">${ARROW_ICON}</span></button>
     </div>
@@ -1561,6 +1580,7 @@
     timerPauseReasons.clear();
     hideFeedback();
     el.finalScreen.classList.toggle('is-solo', solo);
+    el.winnerCard.style.setProperty('--pc', winner.color);
     el.rematchBtn.querySelector('span').textContent = solo ? 'Rigioca' : 'Rivincita';
 
     if (solo) {
@@ -1775,29 +1795,15 @@
     if (!state.game || state.phase !== 'final') return;
     audio.play('click');
     const text = shareText();
-    const copyPromise = copyText(text);
     if (navigator.share) {
-      const outcome = await new Promise((resolve) => {
-        let settled = false;
-        let timeoutId = 0;
-        const finish = (result) => {
-          if (settled) return;
-          settled = true;
-          window.clearTimeout(timeoutId);
-          resolve(result);
-        };
-        timeoutId = window.setTimeout(() => finish('timeout'), 2000);
-        try {
-          navigator.share({ title: 'Indovina la Squadra', text })
-            .then(() => finish('shared'))
-            .catch((error) => finish(error && error.name === 'AbortError' ? 'aborted' : 'failed'));
-        } catch (error) {
-          finish('failed');
-        }
-      });
-      if (outcome === 'shared' || outcome === 'aborted') return;
+      try {
+        await navigator.share({ title: 'Indovina la Squadra', text });
+        return;
+      } catch (error) {
+        if (error && error.name === 'AbortError') return;
+      }
     }
-    const copied = await copyPromise;
+    const copied = await copyText(text);
     showToast(copied ? 'Risultato copiato. Incollalo nella chat!' : 'Copia non disponibile su questo browser.');
   }
 
@@ -1841,6 +1847,7 @@
   function openRules() {
     if (el.rulesDialog.open) return;
     audio.play('click');
+    el.abortGameBtn.hidden = !state.game || !['handoff', 'game', 'summary'].includes(state.screen);
     pauseGameTimer('rules');
     pauseFeedbackAdvance();
     if (typeof el.rulesDialog.showModal === 'function') {
@@ -1942,6 +1949,13 @@
     el.rulesBtn.addEventListener('click', openRules);
     el.closeRulesBtn.addEventListener('click', closeRules);
     el.rulesOkBtn.addEventListener('click', closeRules);
+    el.abortGameBtn.addEventListener('click', () => {
+      if (!state.game) return;
+      if (!window.confirm('Abbandonare la partita? Il progresso non verrà salvato.')) return;
+      closeRules();
+      returnToSetup();
+      showToast('Partita abbandonata.');
+    });
     el.rulesDialog.addEventListener('click', (event) => {
       if (event.target === el.rulesDialog) closeRules();
     });
@@ -1965,6 +1979,20 @@
       if (event.ctrlKey || event.metaKey || event.altKey) return;
       const target = event.target;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+
+      const activate = event.key === 'Enter' || event.key === ' ';
+      if (activate && target && target.tagName === 'BUTTON') return;
+
+      if (state.screen === 'handoff' && activate) {
+        event.preventDefault();
+        el.startTurnBtn.click();
+        return;
+      }
+      if (state.screen === 'summary' && activate) {
+        event.preventDefault();
+        el.summaryNextBtn.click();
+        return;
+      }
 
       if (state.screen !== 'game') return;
       if (state.phase === 'answering' && /^[1-4]$/.test(event.key)) {
@@ -1995,7 +2023,6 @@
     const playerCount = DATA.players.length;
     const clubCount = DATA.clubs.length;
     const countryCount = new Set(DATA.clubs.map((club) => club.country)).size;
-    const numberFormat = new Intl.NumberFormat('it-IT', { useGrouping: 'always' });
     document.querySelectorAll('[data-player-count]').forEach((node) => { node.textContent = numberFormat.format(playerCount); });
     document.querySelectorAll('[data-club-count]').forEach((node) => { node.textContent = numberFormat.format(clubCount); });
     document.querySelectorAll('[data-country-count]').forEach((node) => { node.textContent = numberFormat.format(countryCount); });

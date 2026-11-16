@@ -6,6 +6,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { CLUBS } from "./clubs.mjs";
 import { CLUB_PAGES } from "./club-pages.mjs";
+import { resolveCanonicalClub } from "./club-aliases.mjs";
+import { cleanWiki, extractTemplates, parseFootballBio, templateParams } from "./wikitext.mjs";
 
 const root = path.join(import.meta.dirname, "..");
 const USER_AGENT = "IndovinaLaSquadra/1.0 (local pass-and-play quiz; squad refresh)";
@@ -26,25 +28,6 @@ function normalizeName(value) {
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
-}
-
-function cleanWiki(value = "") {
-  return String(value)
-    .replace(/<ref[^>]*\/>/gi, "")
-    .replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/\{\{nowrap\|([^{}]*)\}\}/gi, "$1")
-    .replace(/\{\{flagicon\|[^{}]*\}\}/gi, "")
-    .replace(/\{\{flagcountry\|[^{}]*\}\}/gi, "")
-    .replace(/\{\{fc\|([^{}|]*)\}\}/gi, "$1")
-    .replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g, "$2")
-    .replace(/\[\[([^\]]*)\]\]/g, "$1")
-    .replace(/'{2,}/g, "")
-    .replace(/<br\s*\/?>/gi, " / ")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\s*\/\s*/g, " / ")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 async function requestJson(params, tries = 7) {
@@ -122,81 +105,6 @@ function findHeadings(text) {
   return headings;
 }
 
-function extractTemplates(text, matcher) {
-  const output = [];
-  let cursor = 0;
-  while (cursor < text.length) {
-    const start = text.indexOf("{{", cursor);
-    if (start < 0) break;
-    let depth = 0;
-    let index = start;
-    while (index < text.length) {
-      if (text.startsWith("{{", index)) {
-        depth += 1;
-        index += 2;
-      } else if (text.startsWith("}}", index)) {
-        depth -= 1;
-        index += 2;
-        if (depth === 0) break;
-      } else {
-        index += 1;
-      }
-    }
-    if (depth !== 0) break;
-    const body = text.slice(start + 2, index - 2);
-    if (matcher(body)) output.push({ start, end: index, body });
-    cursor = index;
-  }
-  return output;
-}
-
-function splitTemplateParams(body) {
-  const parts = [];
-  let current = "";
-  let square = 0;
-  let curly = 0;
-  for (let index = 0; index < body.length; index += 1) {
-    const pair = body.slice(index, index + 2);
-    if (pair === "[[") {
-      square += 1;
-      current += pair;
-      index += 1;
-    } else if (pair === "]]") {
-      square = Math.max(0, square - 1);
-      current += pair;
-      index += 1;
-    } else if (pair === "{{") {
-      curly += 1;
-      current += pair;
-      index += 1;
-    } else if (pair === "}}") {
-      curly = Math.max(0, curly - 1);
-      current += pair;
-      index += 1;
-    } else if (body[index] === "|" && square === 0 && curly === 0) {
-      parts.push(current);
-      current = "";
-    } else {
-      current += body[index];
-    }
-  }
-  parts.push(current);
-  return parts;
-}
-
-function templateParams(body) {
-  const parts = splitTemplateParams(body);
-  const params = {};
-  for (const part of parts.slice(1)) {
-    const separator = part.indexOf("=");
-    if (separator < 0) continue;
-    const key = part.slice(0, separator).trim().toLowerCase();
-    const value = part.slice(separator + 1).trim();
-    if (key) params[key] = value;
-  }
-  return params;
-}
-
 function extractNameAndPage(value) {
   const cleaned = String(value || "")
     .replace(/<ref[^>]*\/>/gi, "")
@@ -225,7 +133,7 @@ function headingForTemplate(headings, position) {
 }
 
 function isExcludedHeading(title) {
-  return /out on loan|loaned out|loan out|reserve|youth|academy|former|women|manager|staff|transfer|notable|records|honours|european|history|support|stadium|kit|crest|ownership|season|statistic|top scorer|personnel|coaching|honor/i.test(title);
+  return /out on loan|loaned out|loan out|\bloan(?:ed|s)?\b|reserve|youth|academy|former|women|manager|staff|transfer|notable|records|honours|european|history|support|stadium|kit|crest|ownership|season|statistic|top scorer|personnel|coaching|honor|junior|campus|unregistered|primavera|next\s*gen|\bii\b|\b[bc]\s+team\b|other players/i.test(title);
 }
 
 function isSquadHeading(title) {
@@ -267,6 +175,12 @@ function discoverSquad(text, clubName) {
   for (const [heading, templatesInGroup] of chosen) {
     for (const template of templatesInGroup) {
       const params = templateParams(template.body);
+      const other = cleanWiki(params.other || "");
+      if (/unregistered|svincolato|free agent|without club|reserve|primavera|youth|academy|next\s*gen|futuro|castilla|atl[eè]tic|jong|campus|\bii\b|\b[bc]\s+team\b|\bU-?\d{2}\b|\bunder-?\d{2}\b/i.test(other)) continue;
+      // Keep loanees who are currently in this squad ("on loan from …"), but
+      // drop players the club has loaned out ("on loan to/at …"). The player
+      // infobox later confirms the exact current club either way.
+      if (/\bout on loan\b|\bon loan (?:to|at)\b|\bloaned (?:out )?(?:to|at)\b|\bloan (?:to|at)\b|\bprestito (?:a|al|alla)\b/i.test(other)) continue;
       const extracted = extractNameAndPage(params.name || "");
       if (!extracted.name) continue;
       const key = normalizeName(extracted.name);
@@ -323,20 +237,11 @@ function positionFromPage(value, fallbackGroup) {
 }
 
 function parsePlayerInfobox(wikitext) {
-  const start = wikitext.search(/\{\{\s*Infobox football biography/i);
-  const box = start >= 0 ? wikitext.slice(start) : "";
-  const lines = box.split("\n");
-  const params = {};
-  let depthEnded = false;
-  for (const line of lines) {
-    if (depthEnded) break;
-    if (line.trim() === "}}") depthEnded = true;
-    const match = line.match(/^\s*\|\s*([a-z_0-9]+)\s*=\s*(.*)$/i);
-    if (match) params[match[1].toLowerCase()] = match[2].trim();
-  }
+  const info = parseFootballBio(wikitext);
+  const params = info.params || {};
 
   let age = null;
-  const birth = (params.birth_date || "").match(/(\d{4})\|(\d{1,2})\|(\d{1,2})/);
+  const birth = String(params.birth_date || "").match(/(\d{4})\|(\d{1,2})\|(\d{1,2})/);
   if (birth) {
     const date = new Date(Number(birth[1]), Number(birth[2]) - 1, Number(birth[3]));
     age = now.getFullYear() - date.getFullYear() - (now < new Date(now.getFullYear(), date.getMonth(), date.getDate()) ? 1 : 0);
@@ -344,27 +249,33 @@ function parsePlayerInfobox(wikitext) {
 
   const isYouthTeam = (val) => /\bU-?\d{2}\b|\bunder-?\d{2}\b|youth|olympic|B team/i.test(val);
   const isNonFifaTeam = (val) => /Catalonia|Galicia|Basque Country|Andalusia|Murcia|Valencia national|Canary Islands|Corsica|Brittany|Padania|Lombardy|Sardinia|Tibet|Kurdistan|Palestine national|Abkhazia|South Ossetia|Northern Cyprus|Western Sahara|Somaliland|Zanzibar/i.test(val);
-  let country = "";
-  const natKeys = Object.keys(params)
-    .filter((key) => /^national_?team\d*$/.test(key) || /^nationalteam\d*$/.test(key))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-  for (const key of natKeys) {
-    const val = cleanWiki(params[key]);
+  let nationalTeamCountry = "";
+  for (const team of info.nationalTeams || []) {
+    const val = cleanWiki(team.value);
     if (!val || isYouthTeam(val) || isNonFifaTeam(val)) continue;
-    country = val.split(" / ")[0].replace(/\s*(national football team|national team)$/i, "").trim();
+    const candidate = val.split(" / ")[0].replace(/\s*(national football team|national team)$/i, "").trim();
+    if (candidate) {
+      nationalTeamCountry = candidate;
+      break;
+    }
   }
-  if (!country) {
-    const birthPlace = cleanWiki(params.birth_place || "");
-    const parts = birthPlace.split(",").map((part) => part.trim());
-    const candidate = parts.length > 1 ? parts[parts.length - 1] : "";
-    if (candidate && !isYouthTeam(candidate)) country = candidate;
-  }
+  let birthPlaceCountry = "";
+  const birthPlace = cleanWiki(info.birthPlace || "");
+  const parts = birthPlace.split(",").map((part) => part.trim());
+  const candidate = parts.length > 1 ? parts[parts.length - 1] : "";
+  if (candidate && !isYouthTeam(candidate)) birthPlaceCountry = candidate;
+  const country = nationalTeamCountry || birthPlaceCountry;
 
   return {
     age,
     country: country.replace(/\[\[|\]\]/g, "").trim(),
-    positionText: params.position || "",
-    hasInfobox: start >= 0
+    nationalTeamCountry: nationalTeamCountry.replace(/\[\[|\]\]/g, "").trim(),
+    birthPlaceCountry: birthPlaceCountry.replace(/\[\[|\]\]/g, "").trim(),
+    positionText: info.position || "",
+    currentClubRaw: cleanWiki(info.currentClubRaw || ""),
+    currentClubTarget: cleanWiki(info.currentClubTarget || ""),
+    status: cleanWiki(info.status || ""),
+    hasInfobox: info.found
   };
 }
 
@@ -410,44 +321,144 @@ async function main() {
     console.log(`${club.name}: ${result.entries.length} giocatori${result.entries.length ? "" : " — NESSUNA ROSA TROVATA"}`);
   }
 
-  const unique = new Map();
-  for (const entry of discovered) {
-    const key = normalizeName(entry.name);
-    if (!unique.has(key)) unique.set(key, entry);
-  }
-  const players = [...unique.values()];
-  console.log(`\nGiocatori unici trovati: ${players.length}`);
-  console.log("Scarico le pagine dei giocatori per età e nazionalità…");
+  const players = discovered;
+  console.log(`\nGiocatori trovati: ${players.length}`);
+  console.log("Scarico le pagine dei giocatori per età, nazionalità e club attuale…");
 
-  const withPage = players.filter((player) => player.pageTitle);
-  const playerPages = await fetchPages(withPage.map((player) => player.pageTitle), true);
-  const finalResults = [];
+  const pageTitles = [...new Set(players.map((player) => player.pageTitle).filter(Boolean))];
+  const playerPages = await fetchPages(pageTitles, true);
+  const candidates = [];
+  const resolution = [];
 
   for (const entry of players) {
     const page = entry.pageTitle ? playerPages.get(entry.pageTitle) : null;
-    const content = page?.revisions?.[0]?.slots?.main?.content || "";
-    const info = content ? parsePlayerInfobox(content) : { age: null, country: "", positionText: "", hasInfobox: false };
+    const pageMissing = Boolean(page?.missing);
+    const content = pageMissing ? "" : page?.revisions?.[0]?.slots?.main?.content || "";
+    const info = content
+      ? parsePlayerInfobox(content)
+      : {
+          age: null,
+          country: "",
+          nationalTeamCountry: "",
+          birthPlaceCountry: "",
+          positionText: "",
+          currentClubRaw: "",
+          currentClubTarget: "",
+          status: "",
+          hasInfobox: false
+        };
     const existingPlayer = existingByName.get(normalizeName(entry.name));
-    const pageLength = page?.length || 0;
+    const pageLength = pageMissing ? 0 : page?.length || 0;
     const clubPrestige = entry.clubPrestige;
     const tier = existingPlayer?.tier || autoTier(pageLength, clubPrestige);
     const pos = positionFromPage(info.positionText, entry.posGroup);
-    finalResults.push({
+
+    let club = entry.club;
+    let status = "squad";
+    if (info.currentClubRaw || info.currentClubTarget) {
+      const resolved = resolveCanonicalClub(info.currentClubRaw, info.currentClubTarget);
+      if (resolved.status === "canonical") {
+        club = resolved.name;
+        status = "infobox";
+      } else {
+        status = resolved.status;
+      }
+    }
+
+    const pageTitle = pageMissing ? entry.pageTitle || null : page?.title || entry.pageTitle || null;
+    const record = {
       name: entry.name,
-      club: entry.club,
+      club,
+      squadClub: entry.club,
       pos,
       posGroup: entry.posGroup,
       country: info.country,
+      nationalTeamCountry: info.nationalTeamCountry || "",
+      birthPlaceCountry: info.birthPlaceCountry || "",
       squadNat: entry.squadNat,
       age: info.age,
       number: entry.number ? Number(entry.number) : null,
       tier,
-      page: page?.title
-        ? `https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replace(/ /g, "_"))}`
-        : null,
+      currentClubRaw: info.currentClubRaw || null,
+      currentClubTarget: info.currentClubTarget || null,
+      status,
+      pageTitle,
+      pageMissing,
+      page: pageMissing || !pageTitle
+        ? null
+        : `https://en.wikipedia.org/wiki/${encodeURIComponent(pageTitle.replace(/ /g, "_"))}`,
       pageLength,
       existing: Boolean(existingPlayer)
+    };
+
+    resolution.push({
+      name: entry.name,
+      squadClub: entry.club,
+      currentClubRaw: info.currentClubRaw,
+      currentClubTarget: info.currentClubTarget,
+      resolvedClub: club,
+      status,
+      pageTitle
     });
+    if (!["squad", "infobox"].includes(status)) continue;
+    candidates.push(record);
+  }
+
+  const candidateScore = (candidate) => {
+    let score = 0;
+    if (candidate.pageTitle && !candidate.pageMissing) score += 100;
+    if (candidate.number != null) score += 20;
+    if (candidate.existing) score += 10;
+    if (candidate.status === "infobox") score += 5;
+    score += Math.min(10, Math.floor(candidate.pageLength / 20000));
+    return score;
+  };
+
+  const grouped = new Map();
+  for (const candidate of candidates) {
+    const key = normalizeName(candidate.name);
+    const group = grouped.get(key) || [];
+    group.push(candidate);
+    grouped.set(key, group);
+  }
+
+  const finalResults = [];
+  for (const group of grouped.values()) {
+    const validPages = new Set(
+      group
+        .filter((candidate) => candidate.pageTitle && !candidate.pageMissing)
+        .map((candidate) => normalizeName(candidate.pageTitle))
+    );
+    if (validPages.size > 1) {
+      for (const candidate of group) {
+        resolution.push({
+          name: candidate.name,
+          squadClub: candidate.squadClub,
+          currentClubRaw: candidate.currentClubRaw,
+          resolvedClub: null,
+          status: "ambiguous-name",
+          pageTitle: candidate.pageTitle,
+          otherPages: [...validPages]
+        });
+      }
+      continue;
+    }
+
+    group.sort((a, b) => candidateScore(b) - candidateScore(a) || a.name.localeCompare(b.name));
+    const [chosen, ...duplicates] = group;
+    for (const duplicate of duplicates) {
+      resolution.push({
+        name: duplicate.name,
+        squadClub: duplicate.squadClub,
+        currentClubRaw: duplicate.currentClubRaw,
+        resolvedClub: duplicate.club,
+        status: "duplicate-name",
+        pageTitle: duplicate.pageTitle,
+        chosenClub: chosen.club
+      });
+    }
+    const { squadClub, currentClubTarget, pageTitle, pageMissing, ...player } = chosen;
+    finalResults.push(player);
   }
 
   finalResults.sort((a, b) => a.name.localeCompare(b.name));
@@ -457,6 +468,7 @@ async function main() {
     source: "Wikipedia current squad sections + player infoboxes",
     clubs: clubs.map((club) => ({ name: club.name, page: club.page })),
     diagnostics,
+    resolution,
     players: finalResults
   }, null, 2));
 

@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { CLUBS } from "./clubs.mjs";
 import { resolveCountry } from "./countries.mjs";
+import { resolveCanonicalClub } from "./club-aliases.mjs";
 
 const root = path.join(import.meta.dirname, "..");
 const raw = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "raw-players.json"), "utf8"));
@@ -18,94 +19,6 @@ try {
 } catch (error) {
   console.warn("tools/logos.json non trovato: uso gli stemmi stilizzati.");
 }
-
-const CLUB_NAMES = {
-  "AC Milan": "Milan",
-  "Inter Milan": "Inter",
-  "Paris Saint-Germain": "PSG",
-  "Bayern Munich": "Bayern Monaco",
-  "Al Hilal": "Al Hilal",
-  "Al-Hilal": "Al Hilal",
-  "Al-Ahli": "Al Ahli",
-  "Al-Nassr": "Al Nassr",
-  "Al-Qadsiah": "Al Qadsiah",
-  "Al-Shabab": "Al Shabab",
-  "Al-Diriyah": "Al Diriyah",
-  "Al-Shamal": "Al Shamal",
-  "Deportivo A Coruña": "Deportivo La Coruña",
-  "Red Star Belgrade": "Stella Rossa",
-  "Tottenham Hotspur": "Tottenham",
-  "Brighton & Hove Albion": "Brighton",
-  "Wolverhampton Wanderers": "Wolverhampton",
-  "West Ham United": "West Ham",
-  "Leeds United": "Leeds",
-  "Los Angeles FC": "LAFC",
-  "SC Freiburg": "Friburgo",
-  "VfB Stuttgart": "Stuttgart",
-  "VfL Wolfsburg": "Wolfsburg",
-  "Bayer Leverkusen": "Leverkusen",
-  "RB Leipzig": "Lipsia",
-  "Eintracht Frankfurt": "Eintracht Francoforte",
-  "Club Brugge": "Club Bruges",
-  NEC: "NEC Nijmegen",
-  "Schalke 04": "Schalke 04",
-  "Mainz 05": "Mainz 05",
-};
-
-const COUNTRY = {
-  Algeria: ["Algeria", "🇩🇿"],
-  Argentina: ["Argentina", "🇦🇷"],
-  Armenia: ["Armenia", "🇦🇲"],
-  Austria: ["Austria", "🇦🇹"],
-  Belgium: ["Belgio", "🇧🇪"],
-  "Bosnia and Herzegovina": ["Bosnia ed Erzegovina", "🇧🇦"],
-  Brazil: ["Brasile", "🇧🇷"],
-  Cameroon: ["Camerun", "🇨🇲"],
-  Canada: ["Canada", "🇨🇦"],
-  Colombia: ["Colombia", "🇨🇴"],
-  Croatia: ["Croazia", "🇭🇷"],
-  "Czech Republic": ["Rep. Ceca", "🇨🇿"],
-  Denmark: ["Danimarca", "🇩🇰"],
-  Ecuador: ["Ecuador", "🇪🇨"],
-  Egypt: ["Egitto", "🇪🇬"],
-  England: ["Inghilterra", "🇬🇧"],
-  France: ["Francia", "🇫🇷"],
-  Gambia: ["Gambia", "🇬🇲"],
-  Georgia: ["Georgia", "🇬🇪"],
-  Germany: ["Germania", "🇩🇪"],
-  Ghana: ["Ghana", "🇬🇭"],
-  Greece: ["Grecia", "🇬🇷"],
-  Guinea: ["Guinea", "🇬🇳"],
-  Hungary: ["Ungheria", "🇭🇺"],
-  Iran: ["Iran", "🇮🇷"],
-  Italy: ["Italia", "🇮🇹"],
-  "Ivory Coast": ["Costa d'Avorio", "🇨🇮"],
-  Japan: ["Giappone", "🇯🇵"],
-  Kosovo: ["Kosovo", "🇽🇰"],
-  Mexico: ["Messico", "🇲🇽"],
-  Morocco: ["Marocco", "🇲🇦"],
-  Netherlands: ["Paesi Bassi", "🇳🇱"],
-  Nigeria: ["Nigeria", "🇳🇬"],
-  Norway: ["Norvegia", "🇳🇴"],
-  Poland: ["Polonia", "🇵🇱"],
-  Portugal: ["Portogallo", "🇵🇹"],
-  "Republic of Ireland": ["Irlanda", "🇮🇪"],
-  Russia: ["Russia", "🇷🇺"],
-  Scotland: ["Scozia", "🇬🇧"],
-  Senegal: ["Senegal", "🇸🇳"],
-  Serbia: ["Serbia", "🇷🇸"],
-  Slovakia: ["Slovacchia", "🇸🇰"],
-  Slovenia: ["Slovenia", "🇸🇮"],
-  "South Korea": ["Corea del Sud", "🇰🇷"],
-  Spain: ["Spagna", "🇪🇸"],
-  Sweden: ["Svezia", "🇸🇪"],
-  Switzerland: ["Svizzera", "🇨🇭"],
-  Turkey: ["Turchia", "🇹🇷"],
-  Ukraine: ["Ucraina", "🇺🇦"],
-  "United States": ["Stati Uniti", "🇺🇸"],
-  Uruguay: ["Uruguay", "🇺🇾"],
-  Wales: ["Galles", "🇬🇧"],
-};
 
 const NAME_OVERRIDES = {
   "Joan Garcia": "Joan García",
@@ -130,6 +43,14 @@ const SPLIT_OVERRIDES = {
   "Randal Kolo Muani": ["Randal", "Kolo Muani"],
   "Son Heung-min": ["Heung-min", "Son"],
   "Lee Kang-in": ["Kang-in", "Lee"],
+  "Kim Min-jae": ["Min-jae", "Kim"],
+  "Hwang Hee-chan": ["Hee-chan", "Hwang"],
+  "Hwang In-beom": ["In-beom", "Hwang"],
+  "Lee Jae-sung": ["Jae-sung", "Lee"],
+  "Lee Han-beom": ["Han-beom", "Lee"],
+  "Oh Hyeon-gyu": ["Hyeon-gyu", "Oh"],
+  "Yang Min-hyeok": ["Min-hyeok", "Yang"],
+  "Kim Ye-geon": ["Ye-geon", "Kim"],
   "Rayan Aït-Nouri": ["Rayan", "Aït-Nouri"],
   "Jean-Philippe Mateta": ["Jean-Philippe", "Mateta"],
   "Charles De Ketelaere": ["Charles", "De Ketelaere"],
@@ -161,6 +82,15 @@ function cleanSquadName(value) {
     .trim();
 }
 
+// Wikipedia page titles carry disambiguators such as "(footballer, born 1991)".
+// They must never surface in the quiz or inside the first/last split.
+function cleanDisplayName(value) {
+  return String(value || "")
+    .replace(/\s*\([^)]*\)\s*$/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function titleFromUrl(url) {
   if (!url) return "";
   try {
@@ -171,17 +101,49 @@ function titleFromUrl(url) {
   }
 }
 
+const EAST_ASIAN_SURNAMES = new Set([
+  "lee", "kim", "park", "choi", "jung", "jeong", "kang", "cho", "yoon", "jang", "lim", "han",
+  "oh", "seo", "shin", "kwon", "hwang", "ahn", "song", "hong", "yoo", "moon", "bae", "baek",
+  "nam", "ryu", "ko", "ha", "heo", "son", "jeon", "jo", "noh", "yang", "koo", "kwak", "min",
+  "sung", "won", "chun", "chung", "jin", "ma", "paik", "pang", "pyun", "suh", "yeo", "yun"
+]);
+const NAME_PARTICLES = new Set([
+  "van", "von", "de", "der", "den", "di", "da", "del", "della", "dei", "dos", "das", "do",
+  "du", "des", "le", "la", "ben", "bin", "al", "el", "ter", "ten", "op", "af", "av",
+  "abu", "st", "st."
+]);
+
 function splitName(name) {
   if (SPLIT_OVERRIDES[name]) return SPLIT_OVERRIDES[name];
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return ["", name];
+
+  // East Asian order: surname first, given name last (Lee Kang-in, Kim Min Jae).
+  if (parts.length >= 2 && parts.length <= 3 && EAST_ASIAN_SURNAMES.has(parts[0].toLowerCase())) {
+    return [parts.slice(1).join(" "), parts[0]];
+  }
+
+  // Particle-aware surnames: Virgil van Dijk, Frenkie de Jong, Di Lorenzo.
+  let surnameStart = parts.length - 1;
+  while (surnameStart > 1 && NAME_PARTICLES.has(parts[surnameStart - 1].toLowerCase())) {
+    surnameStart -= 1;
+  }
+  if (surnameStart < parts.length - 1) {
+    return [parts.slice(0, surnameStart).join(" "), parts.slice(surnameStart).join(" ")];
+  }
+
+  // Generational suffixes stay with the surname.
+  if (/^(jr|sr|ii|iii|iv)\.?$/i.test(parts[parts.length - 1]) && parts.length > 2) {
+    return [parts.slice(0, -2).join(" "), parts.slice(-2).join(" ")];
+  }
+
   const last = parts.pop();
   return [parts.join(" "), last];
 }
 
 function createPlayer({ name, club, pos, nat, flag, age, num, tier, src }) {
   if (!clubMap.has(club)) throw new Error(`Missing club metadata for "${club}" (${name})`);
-  const displayName = NAME_OVERRIDES[name] || name;
+  const displayName = cleanDisplayName(NAME_OVERRIDES[name] || name);
   const split = splitName(displayName);
   const numericAge = age == null ? NaN : Number(age);
   const numericNumber = num == null ? NaN : Number(num);
@@ -200,15 +162,34 @@ function createPlayer({ name, club, pos, nat, flag, age, num, tier, src }) {
   };
 }
 
+function resolvePlayerCountry(player) {
+  return resolveCountry(player.nationalTeamCountry || "", "")
+    || resolveCountry("", player.squadNat || "")
+    || resolveCountry(player.birthPlaceCountry || "", "")
+    || resolveCountry(player.country || "", "");
+}
+
 const players = [];
 const usedNames = new Set();
 const usedTitles = new Set();
+let skippedWithoutCountry = 0;
+let skippedWithoutClub = 0;
 
 for (const player of raw.players) {
-  const name = NAME_OVERRIDES[player.name] || player.name;
-  const club = CLUB_NAMES[player.club] || player.club;
-  const country = COUNTRY[player.country];
-  if (!country) throw new Error(`Missing country metadata for "${player.country}" (${player.name})`);
+  const name = cleanDisplayName(NAME_OVERRIDES[player.name] || player.name);
+  const resolved = resolveCanonicalClub(player.currentClubRaw || player.club, player.currentClubTarget || "");
+  if (resolved.status !== "canonical" || !clubMap.has(resolved.name)) {
+    console.warn(`Salto ${name}: club attuale non valido (${player.currentClubRaw || player.club})`);
+    skippedWithoutClub += 1;
+    continue;
+  }
+  const club = resolved.name;
+  const country = resolvePlayerCountry(player);
+  if (!country) {
+    console.warn(`Salto ${name}: nazionalità non risolta (${player.country || "?"})`);
+    skippedWithoutCountry += 1;
+    continue;
+  }
   const title = titleFromUrl(player.page);
   usedNames.add(normalizeKey(name));
   if (title) usedTitles.add(normalizeKey(title));
@@ -216,8 +197,8 @@ for (const player of raw.players) {
     name,
     club,
     pos: player.pos,
-    nat: country[0],
-    flag: country[1],
+    nat: country.label,
+    flag: country.flag,
     age: player.age,
     num: player.number,
     tier: player.tier,
@@ -226,30 +207,28 @@ for (const player of raw.players) {
 }
 
 let addedFromSquads = 0;
-let skippedWithoutCountry = 0;
-let skippedWithoutClub = 0;
 
 for (const player of squads.players || []) {
   const cleanName = cleanSquadName(player.name);
-  const name = NAME_OVERRIDES[cleanName] || cleanName;
+  const name = cleanDisplayName(NAME_OVERRIDES[cleanName] || cleanName);
   if (!name) continue;
-  const club = CLUB_NAMES[player.club] || player.club;
-  if (!clubMap.has(club)) {
+  const resolved = resolveCanonicalClub(player.currentClubRaw || player.club, player.currentClubTarget || "");
+  if (resolved.status !== "canonical" || !clubMap.has(resolved.name)) {
     skippedWithoutClub += 1;
     continue;
   }
-  const title = titleFromUrl(player.page);
-  const nameKey = normalizeKey(name);
-  const titleKey = title ? normalizeKey(title) : "";
-  if (usedNames.has(nameKey) || (titleKey && usedTitles.has(titleKey))) continue;
+  const club = resolved.name;
 
-  const country = resolveCountry(player.country, player.squadNat)
-    || resolveCountry(player.country, "")
-    || resolveCountry("", player.squadNat);
+  const country = resolvePlayerCountry(player);
   if (!country) {
     skippedWithoutCountry += 1;
     continue;
   }
+
+  const title = titleFromUrl(player.page);
+  const nameKey = normalizeKey(name);
+  const titleKey = title ? normalizeKey(title) : "";
+  if (usedNames.has(nameKey) || (titleKey && usedTitles.has(titleKey))) continue;
 
   usedNames.add(nameKey);
   if (titleKey) usedTitles.add(titleKey);
