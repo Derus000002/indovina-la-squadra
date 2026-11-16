@@ -170,24 +170,44 @@
 
                 <div class="ticket-section">
                   <div class="field-heading">
+                    <span class="field-label">Tipo di risposta</span>
+                    <span class="field-note" id="answerModeNote">Scegli tra quattro club</span>
+                  </div>
+                  <div class="segmented segmented--two" id="answerModeSegment" role="group" aria-label="Tipo di risposta">
+                    <button type="button" class="segment" data-value="choices" aria-pressed="true">
+                      <strong>4 scelte</strong><span>Riconosci lo stemma</span>
+                    </button>
+                    <button type="button" class="segment" data-value="written" aria-pressed="false">
+                      <strong>Scrivi tu</strong><span>Nessun suggerimento</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="ticket-section">
+                  <div class="field-heading">
                     <span class="field-label">Livello di difficoltà</span>
                     <span class="field-note" id="difficultyNote">Il giusto mix</span>
                   </div>
                   <div class="difficulty-grid" id="difficultyGrid" role="group" aria-label="Difficoltà">
                     <button type="button" class="difficulty-card" data-difficulty="facile" aria-pressed="false">
-                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                       <strong>Facile</strong>
                       <span class="difficulty-desc">I nomi che conoscono tutti</span>
                     </button>
                     <button type="button" class="difficulty-card" data-difficulty="medio" aria-pressed="true">
-                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                       <strong>Medio</strong>
                       <span class="difficulty-desc">Il giusto mix di campioni</span>
                     </button>
                     <button type="button" class="difficulty-card" data-difficulty="esperto" aria-pressed="false">
-                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
                       <strong>Esperto</strong>
-                      <span class="difficulty-desc">Per chi legge i tabellini</span>
+                      <span class="difficulty-desc">Solo nomi di nicchia</span>
+                    </button>
+                    <button type="button" class="difficulty-card difficulty-card--estremo" data-difficulty="estremo" aria-pressed="false">
+                      <span class="difficulty-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                      <strong>Estremo</strong>
+                      <span class="difficulty-desc">Figurina essenziale, 12 secondi</span>
                     </button>
                   </div>
                 </div>
@@ -233,9 +253,9 @@
             <h1 class="handoff-title" tabindex="-1"><span id="handoffLead">Passa il telefono a</span><br><em id="handoffName">Marco</em><span class="big-dot">.</span></h1>
             <p class="handoff-desc" id="handoffDesc">Quando sei pronto, tocca il pulsante. Gli altri: niente sbirciatine.</p>
             <div class="turn-facts">
-              <span><strong id="handoffQuestions">5</strong> domande</span>
-              <span><strong>20″</strong> a risposta</span>
-              <span><strong>4</strong> club</span>
+              <span><strong id="handoffQuestions">1</strong> domanda</span>
+              <span><strong id="handoffTime">20″</strong> a risposta</span>
+              <span id="handoffMode"><strong>4</strong> club</span>
             </div>
             <button class="primary-button handoff-button" id="startTurnBtn" type="button">
               <span id="startTurnLabel">Sono Marco, si parte</span>
@@ -270,6 +290,7 @@
                 <small>sec</small>
               </span>
             </div>
+            <button class="end-run" id="endRunBtn" type="button" hidden>Termina corsa</button>
           </div>
 
           <div class="game-grid">
@@ -282,7 +303,15 @@
               </div>
               <h2 class="question-title" id="questionTitle" tabindex="-1">Dove gioca <em>Lamine Yamal</em>?</h2>
               <div class="answers" id="answers" role="group" aria-labelledby="questionTitle"></div>
-              <div class="key-hint">
+              <form class="written-form" id="writtenForm" hidden>
+                <label class="sr-only" for="writtenInput">Scrivi il nome del club</label>
+                <div class="written-row">
+                  <input class="written-input" id="writtenInput" type="text" name="club" placeholder="Scrivi il club…" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="48">
+                  <button class="written-submit" type="submit">Conferma</button>
+                </div>
+                <p class="written-note">Un solo tentativo. Poi il club giusto viene mostrato.</p>
+              </form>
+              <div class="key-hint" id="keyHint">
                 <span><kbd>1</kbd>—<kbd>4</kbd> per rispondere</span>
                 <span class="key-hint-time">Più veloce = più punti</span>
               </div>
@@ -304,7 +333,7 @@
                 <span class="summary-score-label">Punti guadagnati</span>
                 <strong class="summary-score-value" id="summaryPoints">+420</strong>
                 <span class="summary-score-total" id="summaryTotal">Totale: 420 pt</span>
-                <span class="summary-score-stamp" aria-hidden="true">Turno<br>completo</span>
+                <span class="summary-score-stamp" aria-hidden="true">Round<br>completo</span>
               </div>
               <div class="summary-stats" id="summaryStats"></div>
               <div class="summary-cta">
@@ -321,7 +350,7 @@
               <div class="leaderboard-head">
                 <div>
                   <span class="leaderboard-kicker">La classifica</span>
-                  <h2>Dopo il turno <span id="leaderboardTurn">1</span></h2>
+                  <h2>Dopo il round <span id="leaderboardTurn">1</span></h2>
                 </div>
                 <span class="leaderboard-live"><i></i> live</span>
               </div>
@@ -395,28 +424,29 @@
       <div class="rules-head">
         <span class="rules-sticker">Come si gioca</span>
         <h2>Un telefono.<br><em>Zero scuse.</em></h2>
-        <p>Si gioca in fila: ogni persona prende il telefono, risponde alle sue domande e poi lo passa al prossimo. Da soli si gioca dritto, senza passaggi.</p>
+        <p>Si gioca a round alternati: ogni persona risponde a una domanda, poi passa il telefono al prossimo. Il giro riparte fino alla fine delle domande. Da soli si gioca dritto, senza passaggi.</p>
       </div>
       <ol class="rules-steps">
         <li>
           <span class="rule-number">01</span>
-          <div><strong>Passa il telefono</strong><p>Quando è il tuo turno, tocca “Si parte” e tieni lo schermo per te.</p></div>
+          <div><strong>Un round, una domanda</strong><p>Ogni persona prende il telefono, risponde e lo passa al prossimo. Poi si riparte dall'inizio per il round successivo.</p></div>
         </li>
         <li>
           <span class="rule-number">02</span>
-          <div><strong>Riconosci il campione</strong><p>Guarda la figurina, poi scegli il suo club attuale tra quattro opzioni.</p></div>
+          <div><strong>Riconosci il campione</strong><p>Guarda la figurina, poi scegli il club attuale tra quattro opzioni oppure scrivi tu il nome, senza suggerimenti.</p></div>
         </li>
         <li>
           <span class="rule-number">03</span>
-          <div><strong>Fai punti, non rumore</strong><p>Risposta esatta: 100 punti. Velocità e serie di risposte giuste valgono un bel bonus.</p></div>
+          <div><strong>Fai punti, non rumore</strong><p>Risposta esatta: 100 punti. Velocità, serie e risposta scritta valgono un bel bonus. La serie non si azzera tra un round e l'altro.</p></div>
         </li>
       </ol>
       <div class="rules-score">
         <div><span>Risposta esatta</span><strong>+100</strong></div>
         <div><span>Bonus velocità</span><strong>fino a +50</strong></div>
         <div><span>Bonus serie</span><strong>fino a +60</strong></div>
+        <div><span>Risposta scritta</span><strong>+50</strong></div>
       </div>
-      <p class="rules-note"><span>20 secondi</span> per ogni domanda. Se sbagli o finisci il tempo, la serie riparte da zero e il club giusto viene mostrato.</p>
+      <p class="rules-note"><span id="rulesTime">20 secondi</span> per ogni domanda. Se sbagli o finisci il tempo, la serie riparte da zero e il club giusto viene mostrato.</p>
       <p class="rules-solo"><span>Da solo?</span> Scegli un campionato, oppure accendi la modalità infinita: hai <strong>3 vite</strong> e la corsa continua finché non le perdi tutte.</p>
       <p class="rules-legal">Gli stemmi dei club appartengono ai rispettivi titolari e sono usati solo per identificare le squadre. <a href="credits.html">Crediti e licenze</a>.</p>
       <button class="primary-button rules-ok" id="rulesOkBtn" type="button">

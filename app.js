@@ -4,8 +4,9 @@
   const DATA = window.GAME_DATA;
   const BASE_TITLE = document.title;
   const STORAGE_KEY = 'indovina-la-squadra:v1';
-  const QUESTION_TIME = 20;
-  const QUESTION_TIME_MS = QUESTION_TIME * 1000;
+  const DEFAULT_TIME_SEC = 20;
+  const WRITTEN_TIME_BONUS_SEC = 8;
+  const WRITTEN_POINTS = 50;
   const MIN_PLAYERS = 1;
   const MAX_PLAYERS = 8;
   const INFINITE_LIVES = 3;
@@ -43,6 +44,8 @@
     questionsSection: byId('questionsSection'),
     questionsSegment: byId('questionsSegment'),
     questionsNote: byId('questionsNote'),
+    answerModeSegment: byId('answerModeSegment'),
+    answerModeNote: byId('answerModeNote'),
     difficultyGrid: byId('difficultyGrid'),
     difficultyNote: byId('difficultyNote'),
     setupSummary: byId('setupSummary'),
@@ -57,6 +60,8 @@
     handoffName: byId('handoffName'),
     handoffDesc: byId('handoffDesc'),
     handoffQuestions: byId('handoffQuestions'),
+    handoffTime: byId('handoffTime'),
+    handoffMode: byId('handoffMode'),
     startTurnBtn: byId('startTurnBtn'),
     startTurnLabel: byId('startTurnLabel'),
 
@@ -70,10 +75,14 @@
     progressText: byId('progressText'),
     timerDial: byId('timerDial'),
     timerValue: byId('timerValue'),
+    endRunBtn: byId('endRunBtn'),
     gameSticker: byId('gameSticker'),
     questionTitle: byId('questionTitle'),
     streakChip: byId('streakChip'),
     answers: byId('answers'),
+    writtenForm: byId('writtenForm'),
+    writtenInput: byId('writtenInput'),
+    keyHint: byId('keyHint'),
 
     feedback: byId('feedback'),
     confetti: byId('confetti'),
@@ -106,6 +115,7 @@
     closeRulesBtn: byId('closeRulesBtn'),
     rulesOkBtn: byId('rulesOkBtn'),
     abortGameBtn: byId('abortGameBtn'),
+    rulesTime: byId('rulesTime'),
     soundBtn: byId('soundBtn'),
     dataUpdated: byId('dataUpdated')
   };
@@ -142,17 +152,26 @@
     facile: {
       shares: { 1: 0.62, 2: 0.34, 3: 0.04 },
       fallback: [2, 1, 3],
+      timeSec: 20,
       note: 'Solo i nomi che conoscono tutti'
     },
     medio: {
       shares: { 1: 0.25, 2: 0.5, 3: 0.25 },
       fallback: [2, 1, 3],
+      timeSec: 20,
       note: 'Il giusto mix di campioni'
     },
     esperto: {
       shares: { 1: 0.05, 2: 0.3, 3: 0.65 },
-      fallback: [2, 3, 1],
+      fallback: [3, 2, 1],
+      timeSec: 15,
       note: 'Per chi legge i tabellini'
+    },
+    estremo: {
+      shares: { 1: 0, 2: 0, 3: 1 },
+      fallback: [3, 2, 1],
+      timeSec: 12,
+      note: 'Solo figurine essenziali, 12 secondi'
     }
   };
   const QUESTIONS_NOTES = {
@@ -176,6 +195,197 @@
     const club = clubByName.get(player.club);
     if (club && playersByLeague.has(club.country)) playersByLeague.get(club.country).push(player);
   });
+
+  const LEAGUE_NEIGHBORS = {
+    Italia: ['Spagna', 'Francia', 'Germania', 'Inghilterra'],
+    Inghilterra: ['Spagna', 'Italia', 'Francia', 'Germania'],
+    Spagna: ['Italia', 'Francia', 'Inghilterra', 'Portogallo'],
+    Germania: ['Italia', 'Francia', 'Inghilterra', 'Paesi Bassi'],
+    Francia: ['Italia', 'Spagna', 'Inghilterra', 'Germania'],
+    Portogallo: ['Spagna', 'Francia', 'Inghilterra', 'Brasile'],
+    'Paesi Bassi': ['Belgio', 'Germania', 'Inghilterra', 'Francia'],
+    Belgio: ['Paesi Bassi', 'Francia', 'Inghilterra', 'Germania'],
+    Turchia: ['Italia', 'Francia', 'Germania', 'Inghilterra'],
+    'Arabia Saudita': ['Qatar', 'Emirati Arabi Uniti', 'Turchia', 'Italia'],
+    Qatar: ['Arabia Saudita', 'Emirati Arabi Uniti', 'Turchia', 'Francia'],
+    'Emirati Arabi Uniti': ['Arabia Saudita', 'Qatar', 'Turchia', 'Italia'],
+    'Stati Uniti': ['Inghilterra', 'Spagna', 'Brasile', 'Argentina'],
+    Brasile: ['Argentina', 'Portogallo', 'Spagna', 'Italia'],
+    Argentina: ['Brasile', 'Spagna', 'Italia', 'Portogallo'],
+    Serbia: ['Italia', 'Germania', 'Francia', 'Turchia']
+  };
+
+  // Names accepted by the written-answer mode. Every catalogue name is added
+  // automatically; this dictionary covers the common Italian and English forms.
+  const WRITTEN_ALIASES = {
+    Milan: ['Milan', 'AC Milan', 'A.C. Milan', 'Milan FC'],
+    Inter: ['Inter', 'Inter Milan', 'Internazionale', 'FC Internazionale', 'Inter FC'],
+    Juventus: ['Juventus', 'Juve', 'Juventus FC', 'Juventus Turin'],
+    Napoli: ['Napoli', 'Naples', 'SSC Napoli'],
+    Roma: ['Roma', 'Rome', 'AS Roma', 'Roma FC'],
+    Lazio: ['Lazio', 'SS Lazio', 'Lazio FC'],
+    Atalanta: ['Atalanta', 'Atalanta BC', 'Atalanta Bergamasca'],
+    Bologna: ['Bologna', 'Bologna FC', 'Bologna FC 1909'],
+    Fiorentina: ['Fiorentina', 'Viola', 'ACF Fiorentina'],
+    Como: ['Como', 'Como 1907', 'Como Calcio'],
+    Parma: ['Parma', 'Parma Calcio', 'Parma Calcio 1913'],
+    Udinese: ['Udinese', 'Udinese Calcio'],
+    Arsenal: ['Arsenal', 'Arsenal FC'],
+    Chelsea: ['Chelsea', 'Chelsea FC'],
+    Liverpool: ['Liverpool', 'Liverpool FC'],
+    'Manchester City': ['Manchester City', 'Man City', 'Manchester City FC'],
+    'Manchester United': ['Manchester United', 'Man United', 'Man Utd', 'Manchester United FC'],
+    'Aston Villa': ['Aston Villa', 'Villa'],
+    Tottenham: ['Tottenham', 'Spurs', 'Tottenham Hotspur'],
+    Brighton: ['Brighton', 'Brighton & Hove Albion', 'Brighton and Hove Albion'],
+    Bournemouth: ['Bournemouth', 'AFC Bournemouth'],
+    Burnley: ['Burnley', 'Burnley FC'],
+    'Crystal Palace': ['Crystal Palace', 'Palace'],
+    Everton: ['Everton', 'Everton FC'],
+    Leeds: ['Leeds', 'Leeds United'],
+    'Nottingham Forest': ['Nottingham Forest', 'Forest', 'Nottingham'],
+    Sunderland: ['Sunderland', 'Sunderland AFC'],
+    Watford: ['Watford', 'Watford FC'],
+    'West Ham': ['West Ham', 'West Ham United'],
+    Wolverhampton: ['Wolverhampton', 'Wolves', 'Wolverhampton Wanderers'],
+    Barcelona: ['Barcelona', 'Barcellona', 'Barca', 'Barça', 'FC Barcelona'],
+    'Real Madrid': ['Real Madrid', 'Real Madrid CF'],
+    'Atlético Madrid': ['Atlético Madrid', 'Atletico Madrid', 'Atletico', 'Atleti'],
+    'Athletic Bilbao': ['Athletic Bilbao', 'Athletic', 'Bilbao'],
+    'Real Sociedad': ['Real Sociedad', 'Sociedad'],
+    Villarreal: ['Villarreal', 'Villarreal CF'],
+    Elche: ['Elche', 'Elche CF'],
+    'Deportivo La Coruña': ['Deportivo La Coruña', 'Deportivo La Coruna', 'Deportivo', 'La Coruña', 'La Coruna', 'Deportivo de La Coruña', 'Deportivo de A Coruña'],
+    'Bayern Monaco': ['Bayern Monaco', 'Bayern', 'Bayern Munich', 'Bayern München', 'FC Bayern Munich'],
+    Leverkusen: ['Leverkusen', 'Bayer Leverkusen', 'Bayer 04 Leverkusen', 'Bayer'],
+    'Borussia Dortmund': ['Borussia Dortmund', 'Dortmund', 'BVB'],
+    'Eintracht Francoforte': ['Eintracht Francoforte', 'Eintracht', 'Francoforte', 'Eintracht Frankfurt', 'Frankfurt'],
+    Lipsia: ['Lipsia', 'Leipzig', 'RB Leipzig'],
+    Stuttgart: ['Stuttgart', 'Stoccarda', 'VfB Stuttgart'],
+    Wolfsburg: ['Wolfsburg', 'VfL Wolfsburg'],
+    Friburgo: ['Friburgo', 'Freiburg', 'SC Freiburg'],
+    'Mainz 05': ['Mainz 05', 'Mainz', 'Magonza', '1. FSV Mainz 05'],
+    'Schalke 04': ['Schalke 04', 'Schalke', 'FC Schalke 04'],
+    PSG: ['PSG', 'Paris Saint-Germain', 'Paris SG', 'Paris', 'Paris Saint Germain'],
+    Marseille: ['Marseille', 'Marsiglia', 'OM', 'Olympique Marseille'],
+    Monaco: ['Monaco', 'AS Monaco', 'Monaco FC'],
+    Lyon: ['Lyon', 'Lione', 'OL', 'Olympique Lyonnais'],
+    Lens: ['Lens', 'RC Lens'],
+    Benfica: ['Benfica', 'SL Benfica', 'Sport Lisboa e Benfica'],
+    Porto: ['Porto', 'FC Porto'],
+    'Sporting CP': ['Sporting CP', 'Sporting', 'Sporting Lisbona', 'Sporting Lisbon', 'Sporting Clube de Portugal'],
+    Braga: ['Braga', 'SC Braga', 'Sporting Braga'],
+    Ajax: ['Ajax', 'AFC Ajax', 'Ajax Amsterdam'],
+    PSV: ['PSV', 'PSV Eindhoven', 'Eindhoven'],
+    Feyenoord: ['Feyenoord', 'Feyenoord Rotterdam'],
+    'NEC Nijmegen': ['NEC Nijmegen', 'NEC', 'Nijmegen'],
+    'Club Bruges': ['Club Bruges', 'Bruges', 'Brugge', 'Club Brugge'],
+    Anderlecht: ['Anderlecht', 'RSC Anderlecht'],
+    Genk: ['Genk', 'KRC Genk', 'RC Genk'],
+    Gent: ['Gent', 'KAA Gent', 'AA Gent', 'Gand'],
+    Galatasaray: ['Galatasaray', 'Gala', 'Galatasaray SK'],
+    Fenerbahçe: ['Fenerbahçe', 'Fenerbahce', 'Fener', 'Fenerbahçe SK'],
+    Beşiktaş: ['Beşiktaş', 'Besiktas', 'Beşiktaş JK'],
+    Trabzonspor: ['Trabzonspor'],
+    'Al Hilal': ['Al Hilal', 'Al-Hilal', 'Al Hilal SFC'],
+    'Al Nassr': ['Al Nassr', 'Al-Nassr', 'Al Nassr FC'],
+    'Al Ahli': ['Al Ahli', 'Al-Ahli', 'Al Ahli Saudi FC', 'Al-Ahli Saudi FC'],
+    'Al Qadsiah': ['Al Qadsiah', 'Al-Qadsiah'],
+    'Al Shabab': ['Al Shabab', 'Al-Shabab', 'Al Shabab Club'],
+    'Al Diriyah': ['Al Diriyah', 'Al-Diriyah', 'Diriyah', 'Diriyah Club'],
+    'Al Kharaitiyat': ['Al Kharaitiyat', 'Al-Kharaitiyat'],
+    'Al Sadd': ['Al Sadd', 'Al-Sadd', 'Al Sadd SC'],
+    'Al Shamal': ['Al Shamal', 'Al-Shamal'],
+    'Al Duhail': ['Al Duhail', 'Al-Duhail'],
+    'Al Wasl': ['Al Wasl', 'Al-Wasl'],
+    'Al Ain': ['Al Ain', 'Al-Ain'],
+    'Shabab Al Ahli': ['Shabab Al Ahli', 'Shabab Al-Ahli', 'Shabab Al Ahli Club'],
+    'Al Jazira': ['Al Jazira', 'Al-Jazira'],
+    'Inter Miami': ['Inter Miami', 'Inter Miami CF', 'Miami'],
+    'Chicago Fire': ['Chicago Fire', 'Chicago Fire FC', 'Chicago'],
+    LAFC: ['LAFC', 'Los Angeles FC', 'Los Angeles'],
+    'Orlando City': ['Orlando City', 'Orlando City SC', 'Orlando'],
+    Flamengo: ['Flamengo', 'CR Flamengo', 'Clube de Regatas do Flamengo'],
+    Palmeiras: ['Palmeiras', 'SE Palmeiras', 'Sociedade Esportiva Palmeiras'],
+    Corinthians: ['Corinthians', 'SC Corinthians', 'Corinthians Paulista'],
+    Santos: ['Santos', 'Santos FC'],
+    'River Plate': ['River Plate', 'River', 'Club Atlético River Plate'],
+    'Boca Juniors': ['Boca Juniors', 'Boca', 'Club Atlético Boca Juniors'],
+    'Racing Club': ['Racing Club', 'Racing', 'Racing Club de Avellaneda'],
+    'Rosario Central': ['Rosario Central', 'Rosario', 'Club Atlético Rosario Central'],
+    'Stella Rossa': ['Stella Rossa', 'Red Star', 'Red Star Belgrade', 'Crvena Zvezda'],
+    Partizan: ['Partizan', 'FK Partizan', 'Partizan Belgrade'],
+    Vojvodina: ['Vojvodina', 'FK Vojvodina', 'Vojvodina Novi Sad'],
+    'Čukarički': ['Čukarički', 'Cukaricki', 'FK Čukarički']
+  };
+
+  function normalizeAnswer(value) {
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/&/g, ' e ')
+      .replace(/[^a-z0-9]+/gi, ' ')
+      .trim()
+      .toLowerCase();
+  }
+
+  const writtenClubByAlias = new Map();
+  DATA.clubs.forEach((club) => {
+    const aliases = [club.name, ...(WRITTEN_ALIASES[club.name] || [])];
+    aliases.forEach((alias) => {
+      const key = normalizeAnswer(alias);
+      if (key && !writtenClubByAlias.has(key)) writtenClubByAlias.set(key, club.name);
+    });
+  });
+
+  function levenshtein(first, second) {
+    const a = Array.from(first);
+    const b = Array.from(second);
+    let previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+    for (let row = 1; row <= a.length; row += 1) {
+      const current = [row];
+      for (let column = 1; column <= b.length; column += 1) {
+        current[column] = Math.min(
+          current[column - 1] + 1,
+          previous[column] + 1,
+          previous[column - 1] + (a[row - 1] === b[column - 1] ? 0 : 1)
+        );
+      }
+      previous = current;
+    }
+    return previous[b.length];
+  }
+
+  function matchWrittenClub(value) {
+    const normalized = normalizeAnswer(value);
+    if (!normalized) return '';
+    const exact = writtenClubByAlias.get(normalized);
+    if (exact) return exact;
+    if (normalized.length < 5) return '';
+
+    const candidates = new Map();
+    writtenClubByAlias.forEach((club, alias) => {
+      if (alias.length < 5 || Math.abs(alias.length - normalized.length) > 2) return;
+      const maxDistance = alias.length >= 9 ? 2 : 1;
+      const distance = levenshtein(normalized, alias);
+      if (distance > maxDistance) return;
+      const previous = candidates.get(club);
+      if (previous == null || distance < previous) candidates.set(club, distance);
+    });
+    return candidates.size === 1 ? Array.from(candidates.keys())[0] : '';
+  }
+
+  function baseTimeSeconds(difficultyKey, answerMode) {
+    const config = DIFFICULTIES[difficultyKey] || DIFFICULTIES.medio;
+    return (config.timeSec || DEFAULT_TIME_SEC) + (answerMode === 'written' ? WRITTEN_TIME_BONUS_SEC : 0);
+  }
+
+  function updateRulesUI() {
+    if (!el.rulesTime) return;
+    const difficulty = state.game ? state.game.difficulty : state.settings.difficulty;
+    const answerMode = state.game ? state.game.answerMode : state.settings.answerMode;
+    el.rulesTime.textContent = `${baseTimeSeconds(difficulty, answerMode)} secondi`;
+  }
 
   const defaultName = (index) => `Giocatore ${index + 1}`;
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -237,8 +447,9 @@
     count: clamp(Number(saved && saved.count) || 3, MIN_PLAYERS, MAX_PLAYERS),
     names: Array.from({ length: MAX_PLAYERS }, (_, index) => sanitizeName(savedNames[index], index)),
     perPlayer: [3, 5, 7].includes(Number(saved && saved.perPlayer)) ? Number(saved.perPlayer) : 5,
-    difficulty: ['facile', 'medio', 'esperto'].includes(saved && saved.difficulty) ? saved.difficulty : 'medio',
+    difficulty: ['facile', 'medio', 'esperto', 'estremo'].includes(saved && saved.difficulty) ? saved.difficulty : 'medio',
     league: saved && LEAGUES[saved.league] ? saved.league : 'all',
+    answerMode: saved && saved.answerMode === 'written' ? 'written' : 'choices',
     infinite: Boolean(saved && saved.infinite),
     sound: !saved || saved.sound !== false
   };
@@ -249,7 +460,8 @@
     phase: 'idle',
     game: null,
     turnIndex: 0,
-    qIndex: 0,
+    roundIndex: 0,
+    writtenSubmitAt: 0,
     currentQuestion: null
   };
 
@@ -363,8 +575,8 @@
      --------------------------------------------------------- */
 
   const gameTimer = {
-    limitMs: QUESTION_TIME_MS,
-    remainingMs: QUESTION_TIME_MS,
+    limitMs: DEFAULT_TIME_SEC * 1000,
+    remainingMs: DEFAULT_TIME_SEC * 1000,
     deadline: 0,
     intervalId: 0,
     running: false,
@@ -456,9 +668,10 @@
   }
 
   function setTimerUI(milliseconds) {
-    const remaining = clamp(milliseconds, 0, QUESTION_TIME_MS);
+    const limit = (state.game && state.game.timeLimitMs) || gameTimer.limitMs || DEFAULT_TIME_SEC * 1000;
+    const remaining = clamp(milliseconds, 0, limit);
     el.timerValue.textContent = String(Math.ceil(remaining / 1000));
-    el.timerDial.style.setProperty('--timer-angle', `${(remaining / QUESTION_TIME_MS) * 360}deg`);
+    el.timerDial.style.setProperty('--timer-angle', `${(remaining / limit) * 360}deg`);
     el.timerDial.classList.toggle('is-urgent', remaining <= 5000 && remaining > 0);
   }
 
@@ -576,27 +789,35 @@
     const lastName = player.last || player.name;
     const nameClass = getLastNameClass(lastName);
     const shirtNumber = player.num == null ? '' : String(player.num);
-    const meta = [player.pos, player.age ? `${player.age} anni` : ''].filter(Boolean).join(' · ');
-    const label = `Figurina di ${player.name}, ${player.nat}, ${player.pos}${player.age ? `, ${player.age} anni` : ''}, ${stars} ${stars === 1 ? 'stella' : 'stelle'}`;
+    const minimal = Boolean(options.minimal);
+    const showAge = !options.hideAge && Boolean(player.age);
+    const meta = [player.pos, showAge ? `${player.age} anni` : ''].filter(Boolean).join(' · ');
+    const labelAge = options.hideAge ? '' : (player.age ? `, ${player.age} anni` : '');
+    const label = minimal
+      ? `Figurina di ${player.name}, ${player.nat}${shirtNumber ? `, numero ${shirtNumber}` : ''}`
+      : `Figurina di ${player.name}, ${player.nat}, ${player.pos}${labelAge}, ${stars} ${stars === 1 ? 'stella' : 'stelle'}`;
     const decorative = options.decorative ? ' aria-hidden="true"' : ` role="group" aria-label="${escapeHTML(label)}"`;
     const clubA = options.hideClubColors ? 'rgba(23, 33, 23, 0.2)' : safeColor(club.c1, '#172117');
     const clubB = options.hideClubColors ? 'rgba(23, 33, 23, 0.08)' : safeColor(club.c2, '#d8ff3e');
+    const hasMeta = !minimal && Boolean(meta || shirtNumber);
 
-    return `<article class="player-sticker ${nameClass}" style="--pc:${cardColor};--club-a:${clubA};--club-b:${clubB}"${decorative}>
+    return `<article class="player-sticker ${nameClass}${minimal ? ' is-minimal' : ''}" style="--pc:${cardColor};--club-a:${clubA};--club-b:${clubB}"${decorative}>
       <span class="sticker-edge" aria-hidden="true"></span>
       <div class="sticker-top">
         <span class="sticker-flag">${escapeHTML(player.flag)} ${escapeHTML(player.nat)}</span>
-        <span class="sticker-fig">FIG. ${String(player.fig || 0).padStart(3, '0')}</span>
+        ${minimal
+          ? (shirtNumber ? `<span class="sticker-fig sticker-fig--number">#${escapeHTML(shirtNumber)}</span>` : '')
+          : `<span class="sticker-fig">FIG. ${String(player.fig || 0).padStart(3, '0')}</span>`}
       </div>
       <div class="sticker-stage" aria-hidden="true">
-        <span class="sticker-ghost-num">${escapeHTML(shirtNumber)}</span>
+        ${minimal ? '' : `<span class="sticker-ghost-num">${escapeHTML(shirtNumber)}</span>`}
         <span class="sticker-initials">${escapeHTML(getPlayerInitials(player))}</span>
-        <span class="sticker-stars">${'★'.repeat(stars)}</span>
+        ${minimal ? '' : `<span class="sticker-stars">${'★'.repeat(stars)}</span>`}
       </div>
       <div class="sticker-bottom">
         ${player.first ? `<span class="sticker-first">${escapeHTML(player.first)}</span>` : ''}
         <strong class="sticker-last">${escapeHTML(lastName)}</strong>
-        <div class="sticker-meta"><span>${escapeHTML(meta)}</span>${shirtNumber ? `<span>#${escapeHTML(shirtNumber)}</span>` : ''}</div>
+        ${hasMeta ? `<div class="sticker-meta"><span>${escapeHTML(meta)}</span>${shirtNumber ? `<span>#${escapeHTML(shirtNumber)}</span>` : ''}</div>` : ''}
       </div>
     </article>`;
   }
@@ -709,23 +930,33 @@
     el.difficultyGrid.querySelectorAll('[data-difficulty]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.difficulty === state.settings.difficulty));
     });
+    el.answerModeSegment.querySelectorAll('[data-value]').forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.value === state.settings.answerMode));
+    });
 
+    if (el.answerModeNote) {
+      el.answerModeNote.textContent = state.settings.answerMode === 'written'
+        ? 'Nessun suggerimento, +8 secondi per rispondere'
+        : 'Quattro club tra cui scegliere';
+    }
     el.questionsNote.textContent = QUESTIONS_NOTES[state.settings.perPlayer] || QUESTIONS_NOTES[5];
     el.difficultyNote.textContent = DIFFICULTIES[state.settings.difficulty].note;
 
     const totalQuestions = count * state.settings.perPlayer;
     const minutes = Math.max(2, Math.ceil(totalQuestions / 4));
     const leagueText = leagueLabel(state.settings.league);
+    const modeText = state.settings.answerMode === 'written' ? 'scrivi tu' : '4 scelte';
     if (infinite) {
-      el.setupSummary.textContent = `1 giocatore · infinita · 3 vite · ${leagueText}`;
+      el.setupSummary.textContent = `1 giocatore · infinita · 3 vite · ${modeText} · ${leagueText}`;
       el.startButtonKicker.textContent = 'Tre vite, zero limiti';
       el.startButtonLabel.textContent = 'Inizia la corsa';
     } else {
-      el.setupSummary.textContent = `${count} ${count === 1 ? 'giocatore' : 'giocatori'} · ${totalQuestions} domande · ${leagueText} · ~${minutes} min`;
+      el.setupSummary.textContent = `${count} ${count === 1 ? 'giocatore' : 'giocatori'} · ${totalQuestions} domande · ${modeText} · ${leagueText} · ~${minutes} min`;
       el.startButtonKicker.textContent = solo ? 'Un giocatore, zero scuse' : 'Tutto pronto?';
       el.startButtonLabel.textContent = solo ? 'Gioca da solo' : "Fischio d'inizio";
     }
     el.startButton.disabled = available < (infinite ? 1 : totalQuestions);
+    updateRulesUI();
     if (options.save !== false) saveSettings();
   }
 
@@ -746,16 +977,19 @@
     const config = DIFFICULTIES[difficulty] || DIFFICULTIES.medio;
     const tiers = [1, 2, 3];
     const eligible = leaguePool(league);
-    const pools = {
-      1: shuffle(eligible.filter((player) => player.t === 1)),
-      2: shuffle(eligible.filter((player) => player.t === 2)),
-      3: shuffle(eligible.filter((player) => player.t === 3))
-    };
-    const clubCount = new Set(eligible.map((player) => player.club)).size;
-    const clubCap = Math.max(2, Math.ceil(total / Math.max(1, clubCount)));
     const selected = [];
-    const used = new Set();
     const clubCounts = new Map();
+    const tierPools = { 1: new Map(), 2: new Map(), 3: new Map() };
+
+    eligible.forEach((player) => {
+      const tier = [1, 2, 3].includes(player.t) ? player.t : 3;
+      const pools = tierPools[tier];
+      if (!pools.has(player.club)) pools.set(player.club, []);
+      pools.get(player.club).push(player);
+    });
+    tiers.forEach((tier) => {
+      tierPools[tier].forEach((pool, club) => tierPools[tier].set(club, shuffle(pool)));
+    });
 
     const quotas = {};
     const raw = tiers.map((tier) => ({
@@ -776,22 +1010,32 @@
     });
     raw.forEach((item) => { quotas[item.tier] = item.count; });
 
+    // Pick from the club that has appeared least so far. This spreads a round
+    // across the maximum number of clubs, without the old global club cap.
     function takeFromTier(tier) {
-      const pool = pools[tier];
-      while (pool.length) {
-        const player = pool.pop();
-        if (used.has(player)) continue;
-        if ((clubCounts.get(player.club) || 0) >= clubCap) continue;
-        used.add(player);
-        clubCounts.set(player.club, (clubCounts.get(player.club) || 0) + 1);
-        selected.push(player);
-        return player;
-      }
-      return null;
+      const pools = tierPools[tier];
+      let bestCount = Infinity;
+      let candidates = [];
+      pools.forEach((pool, club) => {
+        if (!pool.length) return;
+        const count = clubCounts.get(club) || 0;
+        if (count < bestCount) {
+          bestCount = count;
+          candidates = [club];
+        } else if (count === bestCount) {
+          candidates.push(club);
+        }
+      });
+      if (!candidates.length) return null;
+      const club = candidates[Math.floor(Math.random() * candidates.length)];
+      const player = pools.get(club).pop();
+      selected.push(player);
+      clubCounts.set(club, bestCount + 1);
+      return player;
     }
 
     for (const tier of tiers) {
-      const wanted = Math.min(quotas[tier] || 0, pools[tier].length);
+      const wanted = Math.min(quotas[tier] || 0, eligible.filter((player) => player.t === tier).length);
       for (let index = 0; index < wanted; index += 1) {
         if (!takeFromTier(tier)) break;
       }
@@ -806,47 +1050,61 @@
         picked = takeFromTier(tier);
         if (picked) break;
       }
-      if (picked) continue;
-      for (const tier of tiers) {
-        picked = takeFromTier(tier);
-        if (picked) break;
-      }
       if (!picked) break;
     }
 
     return selected;
   }
 
-  function pickDistractors(correctClub, amount) {
+  function pickDistractors(correctClub, amount, game) {
+    const counts = game.distractorCounts;
+    const picked = [];
+    const used = new Set([correctClub.name]);
+
+    function pickFromPool(pool, slots) {
+      while (slots > 0) {
+        const available = pool.filter((club) => !used.has(club.name));
+        if (!available.length) break;
+        const weights = available.map((club) => {
+          const distance = Math.abs(club.prestige - correctClub.prestige);
+          const proximity = 1 / (distance + 0.6);
+          const sameCountry = club.country === correctClub.country ? 1.6 : 1;
+          const countPenalty = 1 / (1 + (counts.get(club.name) || 0) * 2.4);
+          return Math.max(0.001, proximity * sameCountry * countPenalty * (0.8 + Math.random() * 0.4));
+        });
+        const index = weightedIndex(available, weights);
+        const club = available[index];
+        picked.push(club);
+        used.add(club.name);
+        counts.set(club.name, (counts.get(club.name) || 0) + 1);
+        slots -= 1;
+      }
+    }
+
     const sameCountry = (clubsByCountry.get(correctClub.country) || [])
       .filter((club) => club.name !== correctClub.name);
-    const pool = shuffle(sameCountry);
-    const picked = [];
 
-    while (picked.length < amount && pool.length) {
-      const weights = pool.map((club) => {
-        const distance = Math.abs(club.prestige - correctClub.prestige);
-        return (1 / (distance + 0.45)) * (0.65 + Math.random() * 0.7);
-      });
-      const index = weightedIndex(pool, weights);
-      picked.push(pool.splice(index, 1)[0]);
+    if (game.league !== 'all') {
+      // In a selected league every wrong option stays in that league.
+      pickFromPool(sameCountry, amount);
+    } else if (sameCountry.length >= amount) {
+      pickFromPool(sameCountry, amount);
+    } else {
+      pickFromPool(sameCountry, sameCountry.length);
+      const neighborCountries = LEAGUE_NEIGHBORS[correctClub.country] || [];
+      const neighbors = neighborCountries.flatMap((country) => clubsByCountry.get(country) || []);
+      pickFromPool(neighbors, amount - picked.length);
     }
 
     if (picked.length < amount) {
-      const fallbackPool = DATA.clubs.filter((club) => (
-        club.name !== correctClub.name && !picked.some((item) => item.name === club.name)
-      ));
-      shuffle(fallbackPool).forEach((club) => {
-        if (picked.length < amount) picked.push(club);
-      });
+      pickFromPool(DATA.clubs, amount - picked.length);
     }
-
     return picked;
   }
 
-  function createQuestion(player) {
+  function createQuestion(player, game) {
     const correctClub = getClub(player.club);
-    const distractors = pickDistractors(correctClub, 3);
+    const distractors = pickDistractors(correctClub, 3, game);
     const options = shuffle([correctClub, ...distractors].map((club) => ({
       club,
       correct: club.name === correctClub.name
@@ -865,6 +1123,7 @@
     const infinite = solo && Boolean(config.infinite);
     const perPlayer = [3, 5, 7].includes(Number(config.perPlayer)) ? Number(config.perPlayer) : 5;
     const difficulty = DIFFICULTIES[config.difficulty] ? config.difficulty : 'medio';
+    const answerMode = config.answerMode === 'written' ? 'written' : 'choices';
     const league = config.league === 'all' || LEAGUES[config.league] ? config.league : 'all';
     const names = Array.from({ length: count }, (_, index) => sanitizeName(config.names && config.names[index], index));
     const total = count * perPlayer;
@@ -879,20 +1138,7 @@
       throw new Error('Not enough players to build the game.');
     }
 
-    const blocks = [];
-    let deck = [];
-    if (infinite) {
-      deck = shuffle(sampled);
-    } else {
-      const shuffledPlayers = shuffle(sampled);
-      for (let index = 0; index < count; index += 1) {
-        const block = shuffledPlayers
-          .slice(index * perPlayer, (index + 1) * perPlayer)
-          .map(createQuestion);
-        blocks.push(block);
-      }
-    }
-
+    const deck = shuffle(sampled);
     const players = names.map((name, index) => ({
       id: index,
       order: index,
@@ -906,31 +1152,41 @@
       bestStreak: 0,
       currentStreak: 0,
       lives: infinite ? INFINITE_LIVES : null,
+      results: [],
+      roundPoints: 0,
+      roundCorrect: 0,
+      roundAnswers: 0,
+      roundBestStreak: 0,
+      roundTime: 0,
       turnPoints: 0,
       turnCorrect: 0,
       turnAnswers: 0,
       turnBestStreak: 0,
-      turnTime: 0,
-      turnResults: []
+      turnTime: 0
     }));
 
     return {
       players,
-      blocks,
       deck,
+      questions: [],
       infiniteQuestions: [],
+      distractorCounts: new Map(),
       exhausted: false,
+      endedByPlayer: false,
       count,
       solo,
       infinite,
       league,
       perPlayer,
       difficulty,
+      answerMode,
+      timeLimitMs: baseTimeSeconds(difficulty, answerMode) * 1000,
       totalQuestions: infinite ? null : total,
       config: {
         count,
         perPlayer,
         difficulty,
+        answerMode,
         league,
         infinite,
         names: names.slice()
@@ -942,28 +1198,37 @@
     return state.game ? state.game.players[state.turnIndex] : null;
   }
 
-  function currentBlock() {
-    return state.game ? state.game.blocks[state.turnIndex] : [];
-  }
-
   function questionAt(index) {
     if (!state.game) return null;
-    if (!state.game.infinite) return currentBlock()[index] || null;
-    if (index >= state.game.deck.length) return null;
-    if (!state.game.infiniteQuestions[index]) {
-      state.game.infiniteQuestions[index] = createQuestion(state.game.deck[index]);
+    if (state.game.infinite) {
+      if (index >= state.game.deck.length) return null;
+      if (!state.game.infiniteQuestions[index]) {
+        state.game.infiniteQuestions[index] = createQuestion(state.game.deck[index], state.game);
+      }
+      return state.game.infiniteQuestions[index];
     }
-    return state.game.infiniteQuestions[index];
+    const position = index * state.game.count + state.turnIndex;
+    if (position >= state.game.deck.length) return null;
+    if (!state.game.questions[position]) {
+      state.game.questions[position] = createQuestion(state.game.deck[position], state.game);
+    }
+    return state.game.questions[position];
   }
 
-  function resetTurn(player) {
-    player.currentStreak = 0;
+  function resetTurnStats(player) {
     player.turnPoints = 0;
     player.turnCorrect = 0;
     player.turnAnswers = 0;
     player.turnBestStreak = 0;
     player.turnTime = 0;
-    player.turnResults = [];
+  }
+
+  function resetRoundStats(player) {
+    player.roundPoints = 0;
+    player.roundCorrect = 0;
+    player.roundAnswers = 0;
+    player.roundBestStreak = 0;
+    player.roundTime = 0;
   }
 
   function startGame(config) {
@@ -975,7 +1240,8 @@
       const game = createSession(config);
       state.game = game;
       state.turnIndex = 0;
-      state.qIndex = 0;
+      state.roundIndex = 0;
+      state.writtenSubmitAt = 0;
       state.currentQuestion = null;
       if (game.solo) {
         showScreen('game');
@@ -1004,25 +1270,30 @@
     const player = currentPlayer();
     if (!player) return;
 
-    resetTurn(player);
-    state.qIndex = 0;
+    resetTurnStats(player);
     state.currentQuestion = null;
     state.phase = 'idle';
 
-    const turnLabel = `Turno ${state.turnIndex + 1} di ${state.game.players.length}`;
+    const game = state.game;
+    const roundLabel = `Round ${state.roundIndex + 1} di ${game.perPlayer}`;
+    const turnLabel = `${roundLabel} · Turno ${state.turnIndex + 1} di ${game.players.length}`;
+    const timeLabel = `${Math.round(game.timeLimitMs / 1000)}″`;
+    const recordLabel = player.answered ? `${answerRatioLabel(player.correct, player.answered)}` : 'Prima risposta';
     el.handoffEyebrow.textContent = turnLabel;
-    el.handoffLead.textContent = state.turnIndex === 0 ? 'Si comincia con' : 'Passa il telefono a';
+    el.handoffLead.textContent = state.turnIndex === 0 && state.roundIndex === 0 ? 'Si comincia con' : 'Passa il telefono a';
     el.handoffName.textContent = player.name;
-    el.handoffDesc.textContent = state.turnIndex === 0
-      ? 'Quando sei pronto, tocca il pulsante. Gli altri: niente sbirciatine.'
-      : 'Il telefono è tuo. Quando sei pronto, tocca il pulsante. Gli altri: niente sbirciatine.';
-    el.handoffQuestions.textContent = String(state.game.perPlayer);
+    el.handoffDesc.textContent = state.roundIndex === 0 && state.turnIndex === 0
+      ? 'Una domanda a testa, poi si passa. Quando sei pronto, tocca il pulsante.'
+      : 'Una domanda, poi il telefono passa. Niente sbirciatine.';
+    el.handoffQuestions.textContent = '1';
+    el.handoffTime.textContent = timeLabel;
+    el.handoffMode.innerHTML = game.answerMode === 'written' ? '✍ Scrivi tu' : '<strong>4</strong> club';
     el.startTurnLabel.textContent = `Sono ${player.name}, si parte`;
 
     const initial = Array.from(player.name.trim())[0] || '?';
     const scoreLabel = `${player.score} ${player.score === 1 ? 'punto' : 'punti'}`;
     el.handoffVisual.innerHTML = `<div class="pass-card" style="--pc:${player.color}">
-      <div class="pass-top"><span>Matchday pass</span><span>${turnLabel}</span></div>
+      <div class="pass-top"><span>Matchday pass</span><span>${roundLabel}</span></div>
       <div class="pass-center">
         <span class="pass-initial">${escapeHTML(initial.toUpperCase())}</span>
         <span class="pass-ball">${BALL_ICON}</span>
@@ -1030,14 +1301,15 @@
       <div class="pass-bottom">
         <span class="pass-kicker">In campo adesso</span>
         <strong class="pass-name">${escapeHTML(player.name)}</strong>
-        <div class="pass-facts"><span>${state.game.perPlayer} domande</span><span>20″</span><span>${escapeHTML(scoreLabel)}</span></div>
+        <div class="pass-facts"><span>Dom. ${state.roundIndex + 1}/${game.perPlayer}</span><span>${timeLabel}</span><span>${escapeHTML(scoreLabel)}</span></div>
+        <span class="pass-record">${escapeHTML(recordLabel)}</span>
       </div>
       <span class="pass-note">Niente<br>sbirciatine</span>
     </div>`;
 
     showScreen('handoff', handoffTitle);
-    setDocumentTitle(`Tocca a ${player.name}`);
-    if (state.turnIndex > 0) audio.play('turn');
+    setDocumentTitle(`Round ${state.roundIndex + 1} · Tocca a ${player.name}`);
+    if (state.turnIndex > 0 || state.roundIndex > 0) audio.play('turn');
   }
 
   function beginTurn() {
@@ -1055,7 +1327,7 @@
     const player = currentPlayer();
     if (!player) return;
     el.turnChip.style.setProperty('--pc', player.color);
-    el.turnChipLabel.textContent = state.game.solo ? 'In campo' : 'Turno di';
+    el.turnChipLabel.textContent = state.game.solo ? 'In campo' : `Round ${state.roundIndex + 1}/${state.game.perPlayer}`;
     el.gameAvatar.textContent = player.initials;
     el.gamePlayerName.textContent = player.name;
     el.gameScore.textContent = `${player.score} pt`;
@@ -1066,7 +1338,10 @@
   function renderProgress() {
     if (!state.game) return;
     const player = currentPlayer();
-    if (state.game.infinite) {
+    const game = state.game;
+    el.endRunBtn.hidden = !game.infinite;
+
+    if (game.infinite) {
       const lives = Math.max(0, Number(player.lives) || 0);
       el.progressDots.hidden = true;
       el.progressLives.hidden = false;
@@ -1074,23 +1349,28 @@
         `<span class="life${index < lives ? '' : ' is-lost'}" aria-hidden="true">♥</span>`
       )).join('');
       el.progressLives.setAttribute('aria-label', `${lives} ${lives === 1 ? 'vita rimasta' : 'vite rimaste'} su ${INFINITE_LIVES}`);
-      el.progressText.textContent = `Domanda ${state.qIndex + 1} · Infinita`;
+      el.progressText.textContent = `Domanda ${state.roundIndex + 1} · ${answerRatioLabel(player.correct, player.answered)}`;
       return;
     }
 
-    const total = state.game.perPlayer;
+    const total = game.perPlayer;
     const dots = [];
     el.progressDots.hidden = false;
     el.progressLives.hidden = true;
     for (let index = 0; index < total; index += 1) {
       let className = 'progress-dot';
-      if (player.turnResults[index] === true) className += ' is-correct';
-      else if (player.turnResults[index] === false) className += ' is-wrong';
-      else if (index === state.qIndex && state.phase === 'answering') className += ' is-active';
+      if (player.results[index] === true) className += ' is-correct';
+      else if (player.results[index] === false) className += ' is-wrong';
+      else if (index === state.roundIndex && state.phase === 'answering') className += ' is-active';
       dots.push(`<span class="${className}"></span>`);
     }
     el.progressDots.innerHTML = dots.join('');
-    el.progressText.textContent = `Domanda ${state.qIndex + 1} di ${total}`;
+    const answeredTotal = game.players.reduce((sum, item) => sum + item.answered, 0);
+    const questionNumber = Math.min(game.totalQuestions, answeredTotal + (state.phase === 'feedback' ? 0 : 1));
+    const record = `${answerRatioLabel(player.correct, player.answered)}`;
+    el.progressText.textContent = game.solo
+      ? `Domanda ${state.roundIndex + 1} di ${total} · ${record}`
+      : `Round ${state.roundIndex + 1}/${total} · Tua ${state.roundIndex + 1}/${total} · Partita ${questionNumber}/${game.totalQuestions} · ${record}`;
   }
 
   function renderAnswers(question) {
@@ -1110,8 +1390,10 @@
 
   function startQuestionTimer() {
     timerPauseReasons.clear();
-    let lastSecond = QUESTION_TIME;
-    setTimerUI(QUESTION_TIME_MS);
+    const limitMs = state.game.timeLimitMs;
+    let lastSecond = Math.ceil(limitMs / 1000);
+    gameTimer.limitMs = limitMs;
+    setTimerUI(limitMs);
     gameTimer.start((milliseconds) => {
       setTimerUI(milliseconds);
       const seconds = Math.ceil(milliseconds / 1000);
@@ -1125,14 +1407,15 @@
   function renderQuestion() {
     if (!state.game) return;
     const player = currentPlayer();
-    const question = questionAt(state.qIndex);
+    const game = state.game;
+    const question = questionAt(state.roundIndex);
     if (!player) {
       showToast('Qualcosa non quadra nel tabellone. Ricomincia la partita.');
       return;
     }
     if (!question) {
-      if (state.game.infinite) {
-        state.game.exhausted = true;
+      if (game.infinite) {
+        game.exhausted = true;
         showFinal();
         return;
       }
@@ -1143,26 +1426,52 @@
     hideFeedback();
     state.currentQuestion = question;
     state.phase = 'answering';
+    state.writtenSubmitAt = 0;
+    const written = game.answerMode === 'written';
 
-    el.gameSticker.innerHTML = stickerMarkup(question.player, { hideClubColors: true });
+    el.gameSticker.innerHTML = stickerMarkup(question.player, {
+      hideClubColors: true,
+      hideAge: game.difficulty === 'estremo',
+      minimal: game.difficulty === 'estremo'
+    });
     el.gameSticker.style.setProperty('--player-color', player.color);
     el.questionTitle.innerHTML = `Dove gioca <em>${escapeHTML(question.player.name)}</em>?`;
-    renderAnswers(question);
+    el.answers.hidden = written;
+    el.answers.classList.remove('is-locked');
+    el.writtenForm.hidden = !written;
+    el.writtenForm.classList.remove('is-locked', 'is-shaking');
+    el.writtenInput.disabled = false;
+    el.writtenInput.value = '';
+    el.writtenInput.setAttribute('aria-invalid', 'false');
+    if (written) {
+      el.answers.innerHTML = '';
+      el.keyHint.innerHTML = '<span><kbd>Invio</kbd> per confermare · nessuna opzione</span><span class="key-hint-time">+50 punti se esatta</span>';
+      try {
+        el.writtenInput.focus({ preventScroll: true });
+      } catch (error) {
+        el.writtenInput.focus();
+      }
+    } else {
+      renderAnswers(question);
+      el.keyHint.innerHTML = '<span><kbd>1</kbd>—<kbd>4</kbd> per rispondere</span><span class="key-hint-time">Più veloce = più punti</span>';
+    }
     renderGameMeta();
     renderProgress();
     startQuestionTimer();
     setDocumentTitle(`Dove gioca ${question.player.name}?`);
 
     window.clearTimeout(feedbackFocusTimer);
-    feedbackFocusTimer = window.setTimeout(() => {
-      if (state.screen === 'game' && state.phase === 'answering') {
-        try {
-          el.questionTitle.focus({ preventScroll: true });
-        } catch (error) {
-          el.questionTitle.focus();
+    if (!written) {
+      feedbackFocusTimer = window.setTimeout(() => {
+        if (state.screen === 'game' && state.phase === 'answering') {
+          try {
+            el.questionTitle.focus({ preventScroll: true });
+          } catch (error) {
+            el.questionTitle.focus();
+          }
         }
-      }
-    }, state.qIndex === 0 ? 240 : 80);
+      }, state.roundIndex === 0 ? 240 : 80);
+    }
   }
 
   function bumpScore() {
@@ -1178,35 +1487,80 @@
     answerQuestion(null);
   }
 
+  function shakeWrittenForm() {
+    el.writtenForm.classList.remove('is-shaking');
+    void el.writtenForm.offsetWidth;
+    el.writtenForm.classList.add('is-shaking');
+    window.setTimeout(() => el.writtenForm.classList.remove('is-shaking'), 380);
+  }
+
+  function submitWrittenAnswer() {
+    if (!state.game || state.game.answerMode !== 'written' || state.phase !== 'answering' || !state.currentQuestion) return;
+    const value = el.writtenInput.value.trim().replace(/\s+/g, ' ');
+    if (!value) {
+      shakeWrittenForm();
+      el.writtenInput.focus();
+      return;
+    }
+    const matched = matchWrittenClub(value);
+    state.writtenSubmitAt = performance.now();
+    resolveAnswer({
+      correct: matched === state.currentQuestion.correctClub.name,
+      selectedIndex: null,
+      isTimeout: false,
+      writtenAnswer: value
+    });
+  }
+
   function answerQuestion(selectedIndex) {
     if (!state.game || state.phase !== 'answering' || !state.currentQuestion) return;
-    const player = currentPlayer();
+    // In written mode only the timeout path (selectedIndex === null) may use
+    // this function; normal submissions go through submitWrittenAnswer().
+    if (state.game.answerMode !== 'choices' && selectedIndex !== null) return;
     const question = state.currentQuestion;
-    const remainingMs = gameTimer.getRemaining();
     const isTimeout = selectedIndex === null;
     const selected = isTimeout ? null : question.options[selectedIndex];
     if (!isTimeout && !selected) return;
 
+    resolveAnswer({
+      correct: Boolean(selected && selected.correct),
+      selectedIndex,
+      isTimeout,
+      writtenAnswer: ''
+    });
+  }
+
+  function resolveAnswer({ correct, selectedIndex = null, isTimeout = false, writtenAnswer = '' }) {
+    if (!state.game || state.phase !== 'answering' || !state.currentQuestion) return;
+    const player = currentPlayer();
+    const question = state.currentQuestion;
+    const game = state.game;
+    const remainingMs = gameTimer.getRemaining();
+    const limitMs = game.timeLimitMs;
+    const limitSeconds = limitMs / 1000;
     state.phase = 'feedback';
     gameTimer.stop();
-    const correct = Boolean(selected && selected.correct);
-    const elapsed = clamp((QUESTION_TIME_MS - remainingMs) / 1000, 0, QUESTION_TIME);
+    const elapsed = clamp((limitMs - remainingMs) / 1000, 0, limitSeconds);
     let points = 0;
     let streakBonus = 0;
     let speedBonus = 0;
+    let writtenBonus = 0;
 
     if (correct) {
-      speedBonus = clamp(Math.round((remainingMs / QUESTION_TIME_MS) * 50), 0, 50);
+      speedBonus = clamp(Math.round((remainingMs / limitMs) * 50), 0, 50);
+      writtenBonus = writtenAnswer ? WRITTEN_POINTS : 0;
       player.currentStreak += 1;
       player.bestStreak = Math.max(player.bestStreak, player.currentStreak);
       player.turnBestStreak = Math.max(player.turnBestStreak, player.currentStreak);
+      player.roundBestStreak = Math.max(player.roundBestStreak, player.currentStreak);
       streakBonus = Math.min(60, Math.max(0, 15 * (player.currentStreak - 1)));
-      points = 100 + speedBonus + streakBonus;
+      points = 100 + speedBonus + streakBonus + writtenBonus;
       player.score += points;
       player.correct += 1;
+      player.roundCorrect += 1;
     } else {
       player.currentStreak = 0;
-      if (state.game.infinite) player.lives = Math.max(0, (player.lives || 0) - 1);
+      if (game.infinite) player.lives = Math.max(0, (player.lives || 0) - 1);
     }
 
     player.answered += 1;
@@ -1214,26 +1568,35 @@
     player.turnTime += elapsed;
     player.turnAnswers += 1;
     player.turnPoints += points;
-    if (correct) player.turnCorrect += 1;
-    player.turnResults.push(correct);
+    player.roundTime += elapsed;
+    player.roundAnswers += 1;
+    player.roundPoints += points;
+    if (game.infinite) player.results.push(correct);
+    else player.results[state.roundIndex] = correct;
 
-    const buttons = Array.from(el.answers.querySelectorAll('.answer'));
-    const correctIndex = question.correctIndex;
-    buttons.forEach((button, index) => {
-      button.setAttribute('aria-disabled', 'true');
-      button.tabIndex = -1;
-      const key = button.querySelector('.answer-key');
-      if (index === correctIndex) {
-        button.classList.add('is-correct');
-        if (key) key.textContent = '✓';
-      } else if (index === selectedIndex) {
-        button.classList.add('is-wrong');
-        if (key) key.textContent = '✕';
-      } else {
-        button.classList.add('is-muted');
-      }
-    });
-    el.answers.classList.add('is-locked');
+    if (game.answerMode === 'written') {
+      el.writtenInput.disabled = true;
+      el.writtenForm.classList.add('is-locked');
+      el.writtenInput.setAttribute('aria-invalid', String(!correct));
+    } else {
+      const buttons = Array.from(el.answers.querySelectorAll('.answer'));
+      const correctIndex = question.correctIndex;
+      buttons.forEach((button, index) => {
+        button.setAttribute('aria-disabled', 'true');
+        button.tabIndex = -1;
+        const key = button.querySelector('.answer-key');
+        if (index === correctIndex) {
+          button.classList.add('is-correct');
+          if (key) key.textContent = '✓';
+        } else if (index === selectedIndex) {
+          button.classList.add('is-wrong');
+          if (key) key.textContent = '✕';
+        } else {
+          button.classList.add('is-muted');
+        }
+      });
+      el.answers.classList.add('is-locked');
+    }
 
     renderGameMeta();
     renderProgress();
@@ -1250,22 +1613,26 @@
       vibrate([45, 45, 25]);
     }
 
-    showFeedback({ question, correct, isTimeout, points, speedBonus, streakBonus });
+    showFeedback({ question, correct, isTimeout, points, speedBonus, streakBonus, writtenAnswer, writtenBonus });
   }
 
-  function showFeedback({ question, correct, isTimeout, points, speedBonus, streakBonus }) {
+  function showFeedback({ question, correct, isTimeout, points, speedBonus, streakBonus, writtenAnswer = '', writtenBonus = 0 }) {
     const player = currentPlayer();
+    const game = state.game;
     const club = question.correctClub;
     const revealedSticker = el.gameSticker.querySelector('.player-sticker');
     if (revealedSticker) {
       revealedSticker.style.setProperty('--club-a', safeColor(club.c1, '#172117'));
       revealedSticker.style.setProperty('--club-b', safeColor(club.c2, '#d8ff3e'));
     }
-    const infinite = state.game.infinite;
+    const infinite = game.infinite;
     const gameOver = infinite && player.lives <= 0;
-    const isLast = !infinite && state.qIndex >= state.game.perPlayer - 1;
-    const duration = correct ? 2600 : 3800;
+    const isLast = !infinite && state.roundIndex >= game.perPlayer - 1;
+    const duration = correct ? 2600 : writtenAnswer ? 4400 : 3800;
     const livesLeft = infinite ? Math.max(0, player.lives) : 0;
+    const livesText = infinite
+      ? (livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`)
+      : '';
     const titleOptions = correct
       ? ['Che colpo!', 'Palla in rete!', 'Da applausi!', 'Risposta da campione!']
       : gameOver
@@ -1278,33 +1645,48 @@
     let subtitle;
     if (correct) {
       const streakText = player.currentStreak >= 2 ? `Serie di ${player.currentStreak}. ` : '';
-      subtitle = infinite
-        ? `${streakText}${livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`}`
-        : `${streakText}Il club era quello giusto. Continua così.`;
+      if (writtenAnswer) {
+        subtitle = `${streakText}Hai scritto ${writtenAnswer}: +${writtenBonus} punti. ${infinite ? livesText : 'Continua così.'}`;
+      } else {
+        subtitle = infinite
+          ? `${streakText}${livesText}`
+          : `${streakText}Il club era quello giusto. Continua così.`;
+      }
+    } else if (writtenAnswer) {
+      subtitle = gameOver
+        ? `Hai scritto ${writtenAnswer}. La corsa finisce qui: ${club.name} era la risposta.`
+        : `Hai scritto ${writtenAnswer}. La risposta corretta era ${club.name}. ${infinite ? livesText : ''}`.trim();
     } else if (gameOver) {
       subtitle = `La corsa finisce qui: ${club.name} era la risposta.`;
     } else if (isTimeout) {
       subtitle = infinite
-        ? `${club.name} era la risposta. ${livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`}`
+        ? `${club.name} era la risposta. ${livesText}`
         : `${club.name} era la risposta. Il tempo però è volato.`;
     } else {
       subtitle = infinite
-        ? `La risposta corretta era ${club.name}. ${livesLeft === 1 ? 'Ti resta una vita.' : `Ti restano ${livesLeft} vite.`}`
+        ? `La risposta corretta era ${club.name}. ${livesText}`
         : `La risposta corretta era ${club.name}.`;
     }
+    const nextPlayer = !game.solo && state.turnIndex + 1 < game.count
+      ? game.players[state.turnIndex + 1]
+      : null;
     const nextLabel = infinite
       ? (gameOver ? 'Vedi il risultato' : 'Prossima domanda')
-      : isLast
-        ? (state.game.solo ? 'Vedi il risultato' : 'Vedi il turno')
-        : 'Prossima domanda';
+      : game.solo
+        ? (isLast ? 'Vedi il risultato' : 'Prossima domanda')
+        : nextPlayer
+          ? `Passa a ${nextPlayer.name}`
+          : `Vedi il round ${state.roundIndex + 1}`;
 
-    const pointsLabel = correct && speedBonus > 0 && streakBonus > 0
-      ? 'velocità + serie'
-      : correct && speedBonus > 0
-        ? 'bonus velocità'
-        : correct && streakBonus > 0
-          ? 'bonus serie'
-          : 'punti';
+    const bonusParts = [];
+    if (correct && speedBonus > 0) bonusParts.push('velocità');
+    if (correct && streakBonus > 0) bonusParts.push('serie');
+    if (correct && writtenBonus > 0) bonusParts.push('scritta');
+    const pointsLabel = bonusParts.length === 0
+      ? 'punti'
+      : bonusParts.length === 1
+        ? `bonus ${bonusParts[0]}`
+        : bonusParts.join(' + ');
 
     el.feedback.classList.toggle('is-wrong', !correct);
     el.feedback.style.setProperty('--feedback-time', `${duration}ms`);
@@ -1401,19 +1783,27 @@
       if (currentPlayer().lives <= 0) {
         showFinal();
       } else {
-        state.qIndex += 1;
+        state.roundIndex += 1;
         renderQuestion();
       }
       return;
     }
 
-    if (state.qIndex + 1 < state.game.perPlayer) {
-      state.qIndex += 1;
-      renderQuestion();
-    } else if (state.game.solo) {
-      showFinal();
+    if (state.game.solo) {
+      if (state.roundIndex + 1 >= state.game.perPlayer) {
+        showFinal();
+      } else {
+        state.roundIndex += 1;
+        renderQuestion();
+      }
+      return;
+    }
+
+    if (state.turnIndex + 1 < state.game.count) {
+      state.turnIndex += 1;
+      showHandoff();
     } else {
-      endTurn();
+      endRound();
     }
   }
 
@@ -1433,6 +1823,12 @@
 
   function accuracyFor(player) {
     return player.answered ? Math.round((player.correct / player.answered) * 100) : 0;
+  }
+
+  function answerRatioLabel(correct, answered) {
+    const right = Number(correct) || 0;
+    const total = Number(answered) || 0;
+    return `${right}/${total} ${right === 1 && total === 1 ? 'esatta' : 'esatte'}`;
   }
 
   function averageTimeFor(player) {
@@ -1457,81 +1853,85 @@
     return ' Parità assoluta: decide l’ordine di gioco.';
   }
 
-  function renderLeaderboard() {
+  function renderLeaderboard(highlightCurrent = true) {
     const ranked = rankPlayers(state.game.players);
-    const current = currentPlayer();
+    const current = highlightCurrent ? currentPlayer() : null;
     const topScore = Math.max(1, ...ranked.map((player) => player.score));
 
     el.leaderboardList.innerHTML = ranked.map((player, index) => {
-      const isCurrent = player.id === current.id;
+      const isCurrent = Boolean(current && player.id === current.id);
       const meter = player.score > 0 ? Math.max(6, Math.round((player.score / topScore) * 100)) : 4;
       return `<div class="lb-row${isCurrent ? ' is-current' : ''}${index === 0 ? ' is-leader' : ''}" style="--pc:${player.color};--meter:${meter}%"${isCurrent ? ' aria-current="true"' : ''}>
         <span class="lb-rank">${index + 1}</span>
         <span class="lb-avatar">${escapeHTML(player.initials)}</span>
         <span class="lb-info">
-          <span class="lb-name"><strong>${escapeHTML(player.name)}</strong><span>${player.correct}/${player.answered} esatte</span></span>
+          <span class="lb-name"><strong>${escapeHTML(player.name)}</strong><span>${answerRatioLabel(player.correct, player.answered)}</span></span>
           <span class="lb-meter"><i></i></span>
         </span>
         <span class="lb-score">${player.score}<small>pt</small></span>
       </div>`;
     }).join('');
-    el.leaderboardTurn.textContent = String(state.turnIndex + 1);
+    el.leaderboardTurn.textContent = String(state.roundIndex + 1);
   }
 
-  function endTurn() {
+  function endRound() {
     if (!state.game) return;
-    const player = currentPlayer();
-    state.phase = 'turnSummary';
+    state.phase = 'roundSummary';
     gameTimer.stop();
     timerPauseReasons.clear();
     hideFeedback();
 
-    const total = state.game.perPlayer;
-    const avgTime = player.turnAnswers ? player.turnTime / player.turnAnswers : 0;
-    el.summaryEyebrow.textContent = `Turno ${state.turnIndex + 1} di ${state.game.players.length} concluso`;
-    el.summaryTitle.innerHTML = `Che turno, <em>${escapeHTML(player.name)}</em>.`;
-    if (player.turnCorrect === total) {
-      el.summaryDesc.textContent = 'En plein. Anche il telefono si è commosso.';
-    } else if (player.turnCorrect === 0) {
-      el.summaryDesc.textContent = 'Giornata storta. La rivincita è già nella prossima domanda.';
-    } else if (player.turnCorrect >= Math.ceil(total * 0.7)) {
-      el.summaryDesc.textContent = 'Un turno da titolare. La classifica se ne accorge.';
-    } else {
-      el.summaryDesc.textContent = 'Un turno con alti e bassi. C’è di meglio da fare.';
-    }
-    el.summaryPoints.textContent = `+${player.turnPoints}`;
-    el.summaryTotal.textContent = `Totale: ${player.score} pt`;
+    const ranked = rankPlayers(state.game.players);
+    const leader = ranked[0];
+    const roundBest = state.game.players.slice().sort((first, second) => (
+      second.roundPoints - first.roundPoints ||
+      second.roundCorrect - first.roundCorrect ||
+      second.roundBestStreak - first.roundBestStreak ||
+      first.order - second.order
+    ))[0];
+    const totalQuestions = state.game.totalQuestions;
+    const answered = state.game.players.reduce((sum, player) => sum + player.answered, 0);
+    const roundNumber = state.roundIndex + 1;
+
+    el.summaryEyebrow.textContent = `Round ${roundNumber} di ${state.game.perPlayer} concluso`;
+    el.summaryTitle.innerHTML = `Round <em>${roundNumber}</em> archiviato.`;
+    el.summaryDesc.textContent = `In testa ${leader.name} con ${leader.score} punti. Miglior round: ${roundBest.name}, +${roundBest.roundPoints}.`;
+    el.summaryPoints.textContent = `+${roundBest.roundPoints}`;
+    el.summaryTotal.textContent = `Leader: ${leader.name} · ${leader.score} pt`;
     el.summaryStats.innerHTML = [
-      { value: `${player.turnCorrect}/${total}`, label: 'Risposte esatte' },
-      { value: String(player.turnBestStreak), label: 'Miglior serie' },
-      { value: `${avgTime.toFixed(1).replace('.', ',')}s`, label: 'Tempo medio' }
+      { value: `${roundNumber}/${state.game.perPlayer}`, label: 'Round' },
+      { value: `${answered}/${totalQuestions}`, label: 'Domande giocate' },
+      { value: `${leader.correct}/${leader.answered}`, label: 'Esatte del leader' }
     ].map((stat) => `<div class="summary-stat"><strong>${escapeHTML(stat.value)}</strong><span>${escapeHTML(stat.label)}</span></div>`).join('');
 
-    const isLast = state.turnIndex >= state.game.players.length - 1;
-    if (isLast) {
+    if (roundNumber >= state.game.perPlayer) {
       el.summaryNextLabel.textContent = 'La classifica finale';
-      el.summaryNextNote.textContent = 'Ultimo turno. È il momento della verità.';
+      el.summaryNextNote.textContent = 'Ultimo round. È il momento della verità.';
     } else {
-      const nextPlayer = state.game.players[state.turnIndex + 1];
-      el.summaryNextLabel.textContent = `Passa a ${nextPlayer.name}`;
-      el.summaryNextNote.textContent = 'La classifica si aggiorna. Niente scuse.';
+      const nextRound = roundNumber + 1;
+      const firstPlayer = state.game.players[0];
+      el.summaryNextLabel.textContent = `Inizia il round ${nextRound} · Tocca a ${firstPlayer.name}`;
+      el.summaryNextNote.textContent = `Si riparte da ${firstPlayer.name}. Le serie restano vive.`;
     }
 
-    renderLeaderboard();
+    renderLeaderboard(false);
     showScreen('summary', el.summaryTitle);
-    setDocumentTitle(`Riepilogo turno di ${player.name}`);
+    setDocumentTitle(`Riepilogo round ${roundNumber}`);
     audio.play('turn');
   }
 
   function handleSummaryNext() {
     if (!state.game || state.screen !== 'summary') return;
     audio.play('click');
-    if (state.turnIndex >= state.game.players.length - 1) {
+    if (state.roundIndex + 1 >= state.game.perPlayer) {
       showFinal();
-    } else {
-      state.turnIndex += 1;
-      showHandoff();
+      return;
     }
+    state.roundIndex += 1;
+    state.turnIndex = 0;
+    state.game.players.forEach(resetRoundStats);
+    resetTurnStats(state.game.players[0]);
+    showHandoff();
   }
 
   function renderPodium(ranked) {
@@ -1558,7 +1958,7 @@
         <span class="rank-avatar">${escapeHTML(player.initials)}</span>
         <div class="rank-copy">
           <strong>${escapeHTML(player.name)}</strong>
-          <span>${player.correct}/${state.game.perPlayer} esatte · ${accuracyFor(player)}% precisione</span>
+          <span>${answerRatioLabel(player.correct, player.answered)} · ${accuracyFor(player)}% precisione</span>
         </div>
         <span class="rank-points">${player.score}<small>pt</small></span>
       </div>`
@@ -1575,10 +1975,12 @@
     const solo = state.game.solo;
     const infinite = state.game.infinite;
     const exhausted = state.game.exhausted;
+    const endedByPlayer = state.game.endedByPlayer;
     state.phase = 'final';
     gameTimer.stop();
     timerPauseReasons.clear();
     hideFeedback();
+    el.endRunBtn.hidden = true;
     el.finalScreen.classList.toggle('is-solo', solo);
     el.winnerCard.style.setProperty('--pc', winner.color);
     el.rematchBtn.querySelector('span').textContent = solo ? 'Rigioca' : 'Rivincita';
@@ -1587,11 +1989,15 @@
       el.finalTitle.innerHTML = infinite
         ? (exhausted
           ? `<em>${escapeHTML(winner.name)}</em>,<br>tabellone finito.`
-          : `<em>${escapeHTML(winner.name)}</em>,<br>fino all'ultima vita.`)
+          : endedByPlayer
+            ? `<em>${escapeHTML(winner.name)}</em>,<br>corsa chiusa.`
+            : `<em>${escapeHTML(winner.name)}</em>,<br>fino all'ultima vita.`)
         : `<em>${escapeHTML(winner.name)}</em>,<br>partita chiusa.`;
+      const answeredWord = winner.answered === 1 ? 'domanda' : 'domande';
+      const correctWord = winner.correct === 1 ? 'esatta' : 'esatte';
       el.finalDesc.textContent = infinite
-        ? `La corsa si ferma dopo ${winner.answered} domande, con ${winner.score} punti.${exhausted ? ' Hai svuotato il tabellone: non succede quasi mai.' : ' Le vite sono finite.'}`
-        : `Hai risposto a ${winner.answered} domande e chiuso a ${winner.score} punti. ${winner.correct === winner.answered ? 'En plein: non ne hai sbagliata una.' : `Serie migliore: ${winner.bestStreak}.`}`;
+        ? `Corsa conclusa dopo ${winner.answered} ${answeredWord} e ${winner.score} punti: ${winner.correct} ${correctWord} su ${winner.answered} (${accuracy}%).${exhausted ? ' Hai svuotato il tabellone: non succede quasi mai.' : endedByPlayer ? ' Hai scelto tu quando fermarti.' : ' Le vite sono finite.'}`
+        : `Hai risposto a ${winner.answered} ${answeredWord} e chiuso a ${winner.score} punti. ${winner.correct === winner.answered ? 'En plein: non ne hai sbagliata una.' : `Serie migliore: ${winner.bestStreak}.`}`;
       el.winnerCard.innerHTML = `<span class="winner-stamp">${infinite ? 'Infinita' : 'Solo'}<br>${escapeHTML(season)}</span>
         <span class="winner-kicker"><span>★</span> ${infinite ? 'La tua corsa' : 'Sfida completata'}</span>
         <span class="winner-initials">${escapeHTML(winner.initials)}</span>
@@ -1599,8 +2005,8 @@
         <div class="winner-score"><strong>${winner.score}</strong><span>punti</span></div>
         <div class="winner-stats">
           ${infinite
-            ? `<span>${winner.answered} domande</span><span>${winner.correct} esatte</span><span>Serie ${winner.bestStreak}</span>`
-            : `<span>${winner.correct}/${winner.answered} esatte</span><span>Serie ${winner.bestStreak}</span><span>${accuracy}% precisione</span>`}
+            ? `<span>${winner.answered} ${answeredWord}</span><span>${winner.correct} ${correctWord}</span><span>Serie ${winner.bestStreak}</span>`
+            : `<span>${answerRatioLabel(winner.correct, winner.answered)}</span><span>Serie ${winner.bestStreak}</span><span>${accuracy}% precisione</span>`}
         </div>`;
       el.podium.innerHTML = '';
       el.rankingList.innerHTML = '';
@@ -1613,7 +2019,7 @@
         <span class="winner-label">Campione della partita</span>
         <div class="winner-score"><strong>${winner.score}</strong><span>punti</span></div>
         <div class="winner-stats">
-          <span>${winner.correct}/${state.game.perPlayer} esatte</span>
+          <span>${answerRatioLabel(winner.correct, winner.answered)}</span>
           <span>Serie ${winner.bestStreak}</span>
           <span>${accuracy}% precisione</span>
         </div>`;
@@ -1728,13 +2134,13 @@
     if (state.game.solo) {
       const player = state.game.players[0];
       if (state.game.infinite) {
-        return `🏆 Indovina la Squadra — Modalità infinita\n${player.name}: ${player.score} pt · ${player.correct}/${player.answered} esatte · serie ${player.bestStreak}`;
+        return `🏆 Indovina la Squadra — Modalità infinita\n${player.name}: ${player.score} pt · ${answerRatioLabel(player.correct, player.answered)} · serie ${player.bestStreak}`;
       }
-      return `🏆 Indovina la Squadra — Solo\n${player.name}: ${player.score} pt (${player.correct}/${state.game.perPlayer})`;
+      return `🏆 Indovina la Squadra — Solo\n${player.name}: ${player.score} pt (${player.correct}/${player.answered})`;
     }
     const ranked = rankPlayers(state.game.players);
     const lines = ranked.map((player, index) => (
-      `${index + 1}. ${player.name} — ${player.score} pt (${player.correct}/${state.game.perPlayer})`
+      `${index + 1}. ${player.name} — ${player.score} pt (${player.correct}/${player.answered})`
     ));
     return `🏆 Indovina la Squadra — Stagione ${DATA.season || '2026/27'}\n${lines.join('\n')}`;
   }
@@ -1820,7 +2226,8 @@
     state.game = null;
     state.phase = 'idle';
     state.turnIndex = 0;
-    state.qIndex = 0;
+    state.roundIndex = 0;
+    state.writtenSubmitAt = 0;
     state.currentQuestion = null;
     el.finalScreen.classList.remove('is-solo');
     renderSetup({ save: false });
@@ -1847,6 +2254,7 @@
   function openRules() {
     if (el.rulesDialog.open) return;
     audio.play('click');
+    updateRulesUI();
     el.abortGameBtn.hidden = !state.game || !['handoff', 'game', 'summary'].includes(state.screen);
     pauseGameTimer('rules');
     pauseFeedbackAdvance();
@@ -1878,6 +2286,16 @@
   function bindSetup() {
     el.countMinus.addEventListener('click', () => navigateCount(-1));
     el.countPlus.addEventListener('click', () => navigateCount(1));
+
+    el.answerModeSegment.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-value]');
+      if (!button) return;
+      const value = button.dataset.value === 'written' ? 'written' : 'choices';
+      if (value === state.settings.answerMode) return;
+      state.settings.answerMode = value;
+      audio.play('click');
+      renderSetup();
+    });
 
     el.questionsSegment.addEventListener('click', (event) => {
       const button = event.target.closest('[data-value]');
@@ -1922,7 +2340,8 @@
         perPlayer: state.settings.perPlayer,
         difficulty: state.settings.difficulty,
         league: state.settings.league,
-        infinite: state.settings.infinite
+        infinite: state.settings.infinite,
+        answerMode: state.settings.answerMode
       };
       startGame(config);
     });
@@ -1930,6 +2349,16 @@
 
   function bindGame() {
     el.startTurnBtn.addEventListener('click', beginTurn);
+    el.writtenForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      submitWrittenAnswer();
+    });
+    el.endRunBtn.addEventListener('click', () => {
+      if (!state.game || !state.game.infinite || state.screen !== 'game') return;
+      audio.play('click');
+      state.game.endedByPlayer = true;
+      showFinal();
+    });
     el.answers.addEventListener('click', (event) => {
       const button = event.target.closest('.answer');
       if (!button || state.phase !== 'answering') return;
@@ -1995,10 +2424,11 @@
       }
 
       if (state.screen !== 'game') return;
-      if (state.phase === 'answering' && /^[1-4]$/.test(event.key)) {
+      if (state.phase === 'answering' && state.game && state.game.answerMode === 'choices' && /^[1-4]$/.test(event.key)) {
         event.preventDefault();
         answerQuestion(Number(event.key) - 1);
       } else if (state.phase === 'feedback' && (event.key === 'Enter' || event.key === ' ')) {
+        if (performance.now() - state.writtenSubmitAt < 350) return;
         event.preventDefault();
         advanceFromFeedback();
       }

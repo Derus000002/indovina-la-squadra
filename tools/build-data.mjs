@@ -63,6 +63,38 @@ const SPLIT_OVERRIDES = {
 const clubMap = new Map(CLUBS.map(([name, code, c1, c2, country, prestige]) => [name, { name, code, c1, c2, country, prestige }]));
 if (clubMap.size !== CLUBS.length) throw new Error("Duplicate club name in the catalogue");
 
+// The curated list is the editorial backbone of the game. Every curated
+// player is at least Tier 2; only its original Tier 1 plus genuinely famous
+// active players (long Wikipedia profiles) stay in Tier 1. New squad players
+// are Tier 2 only when their profile is substantial, otherwise Tier 3.
+const curatedByName = new Map();
+const curatedByTitle = new Map();
+raw.players.forEach((player) => {
+  const nameKey = normalizeKey(cleanDisplayName(player.name));
+  if (nameKey) curatedByName.set(nameKey, Number(player.tier));
+  const titleKey = normalizeKey(titleFromUrl(player.page));
+  if (titleKey) curatedByTitle.set(titleKey, Number(player.tier));
+});
+
+const pageLengthByName = new Map();
+const pageLengthByTitle = new Map();
+for (const player of squads.players || []) {
+  const length = Number(player.pageLength) || 0;
+  if (!length) continue;
+  const nameKey = normalizeKey(cleanDisplayName(cleanSquadName(player.name)));
+  const titleKey = normalizeKey(titleFromUrl(player.page));
+  if (nameKey) pageLengthByName.set(nameKey, Math.max(length, pageLengthByName.get(nameKey) || 0));
+  if (titleKey) pageLengthByTitle.set(titleKey, Math.max(length, pageLengthByTitle.get(titleKey) || 0));
+}
+
+function assignTier({ curatedTier, pageLength }) {
+  const curated = Number(curatedTier);
+  const length = Number(pageLength) || 0;
+  if (curated === 1 || length >= 85000) return 1;
+  if (Number.isFinite(curated) || length >= 25000) return 2;
+  return 3;
+}
+
 function normalizeKey(value) {
   return String(value || "")
     .normalize("NFD")
@@ -124,12 +156,19 @@ function splitName(name) {
   }
 
   // Particle-aware surnames: Virgil van Dijk, Frenkie de Jong, Di Lorenzo.
+  // Only the final surname may consume particles. Otherwise a given name such
+  // as Van (Van Williams, Vanja) would absorb the surname it precedes.
   let surnameStart = parts.length - 1;
   while (surnameStart > 1 && NAME_PARTICLES.has(parts[surnameStart - 1].toLowerCase())) {
     surnameStart -= 1;
   }
   if (surnameStart < parts.length - 1) {
-    return [parts.slice(0, surnameStart).join(" "), parts.slice(surnameStart).join(" ")];
+    // Keep an initial surname segment (Kolo Muani, Mac Allister), but never
+    // move the surname itself into the given-name side.
+    const surname = parts.slice(surnameStart).join(" ");
+    const given = parts.slice(0, surnameStart);
+    if (given.length >= 1) return [given.join(" "), surname];
+    return ["", surname];
   }
 
   // Generational suffixes stay with the surname.
@@ -191,8 +230,10 @@ for (const player of raw.players) {
     continue;
   }
   const title = titleFromUrl(player.page);
+  const titleKey = title ? normalizeKey(title) : "";
+  const pageLength = pageLengthByTitle.get(titleKey) || pageLengthByName.get(normalizeKey(name)) || 0;
   usedNames.add(normalizeKey(name));
-  if (title) usedTitles.add(normalizeKey(title));
+  if (titleKey) usedTitles.add(titleKey);
   players.push(createPlayer({
     name,
     club,
@@ -201,7 +242,7 @@ for (const player of raw.players) {
     flag: country.flag,
     age: player.age,
     num: player.number,
-    tier: player.tier,
+    tier: assignTier({ curatedTier: player.tier, pageLength }),
     src: player.page,
   }));
 }
@@ -230,6 +271,10 @@ for (const player of squads.players || []) {
   const titleKey = title ? normalizeKey(title) : "";
   if (usedNames.has(nameKey) || (titleKey && usedTitles.has(titleKey))) continue;
 
+  const curatedTier = curatedByName.get(nameKey)
+    ?? curatedByTitle.get(titleKey)
+    ?? (player.existing ? Number(player.tier) : Number.NaN);
+
   usedNames.add(nameKey);
   if (titleKey) usedTitles.add(titleKey);
   players.push(createPlayer({
@@ -240,9 +285,7 @@ for (const player of squads.players || []) {
     flag: country.flag,
     age: player.age,
     num: player.number,
-    // The curated list defines the top tier; new squad players are capped at
-    // tier 2 so "facile" doesn't surface long-tail youth players as stars.
-    tier: player.existing ? player.tier : (Number(player.tier) === 1 ? 2 : player.tier),
+    tier: assignTier({ curatedTier, pageLength: player.pageLength }),
     src: player.page,
   }));
   addedFromSquads += 1;

@@ -5648,3 +5648,235 @@ kbd {
   }
 }
 
+
+/* ---------------------------------------------------------
+   ROUND-ROBIN, WRITTEN MODE, ESTREMO
+   --------------------------------------------------------- */
+
+.segmented--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.difficulty-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.difficulty-card {
+  min-height: 82px;
+  padding: 9px 7px 8px;
+}
+
+.difficulty-card--estremo {
+  border-color: var(--ink);
+}
+
+.difficulty-card[data-difficulty="estremo"] .difficulty-bars i {
+  background: var(--ink);
+}
+
+.difficulty-card[data-difficulty="estremo"][aria-pressed="true"] {
+  background: var(--coral);
+}
+
+.game-meta {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr) 66px auto;
+}
+
+.end-run {
+  align-self: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: transform 0.14s, box-shadow 0.14s, background 0.14s;
+}
+
+.end-run:hover {
+  background: var(--coral);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.end-run:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.answers[hidden] {
+  display: none;
+}
+
+.written-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.written-form[hidden] {
+  display: none;
+}
+
+.written-row {
+  display: flex;
+  gap: 8px;
+}
+
+.written-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 9px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  outline: none;
+  box-shadow: inset 0 -3px 0 rgba(23, 33, 23, 0.08);
+}
+
+.written-input::placeholder {
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.written-input:focus {
+  box-shadow: 3px 3px 0 var(--lime);
+}
+
+.written-submit {
+  flex: none;
+  min-height: 52px;
+  padding: 0 18px;
+  border: 1.5px solid var(--ink);
+  border-radius: 9px;
+  background: var(--lime);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 17px;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.14s, box-shadow 0.14s;
+}
+
+.written-submit:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.written-submit:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.written-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.written-form.is-locked {
+  opacity: 0.72;
+}
+
+.written-form.is-locked .written-input,
+.written-form.is-locked .written-submit {
+  cursor: default;
+}
+
+.written-form.is-shaking .written-row {
+  animation: written-shake 0.34s ease;
+}
+
+@keyframes written-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+
+.player-sticker.is-minimal .sticker-stage {
+  min-height: 0;
+}
+
+.player-sticker.is-minimal .sticker-initials {
+  font-size: 42cqw;
+}
+
+.player-sticker.is-minimal .sticker-bottom {
+  padding-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .difficulty-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .difficulty-card {
+    min-height: 72px;
+  }
+}
+
+@media (max-width: 820px) {
+  .game-meta {
+    grid-template-columns: minmax(0, 1fr) 62px auto;
+  }
+
+  .progress-block {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .end-run {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 620px) {
+  .segmented--two .segment strong {
+    font-size: 19px;
+  }
+
+  .written-row {
+    gap: 6px;
+  }
+
+  .written-submit {
+    padding: 0 13px;
+  }
+}
+
+@media (max-width: 390px) {
+  .difficulty-grid {
+    gap: 5px;
+  }
+
+  .difficulty-card {
+    min-height: 68px;
+    padding: 8px 6px;
+  }
+
+  .written-row {
+    flex-direction: column;
+  }
+
+  .written-submit {
+    width: 100%;
+  }
+}
